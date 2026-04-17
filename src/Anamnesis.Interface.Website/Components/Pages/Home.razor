@@ -1,0 +1,361 @@
+@page "/"
+@rendermode InteractiveServer
+
+@inject IConversationService ConversationService
+@inject IJSRuntime JSRuntime
+@inject ISnackbar Snackbar
+
+<PageTitle>Symptom Explorer - Anamnesis</PageTitle>
+
+@if (!_hasStarted)
+{
+    <!-- Task 4.1: Symptom intake form shown when no conversation has started -->
+    <MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+        <MudPaper Elevation="3" Class="pa-8">
+            <MudText Typo="Typo.h5" GutterBottom="true">Describe Your Symptoms</MudText>
+            <MudText Typo="Typo.body1" Class="mb-6">
+                Please describe what you are experiencing. Be as detailed as possible — you will be asked
+                follow-up questions to help explore your symptoms further.
+            </MudText>
+
+            @if (_showValidationError)
+            {
+                <!-- Task 4.2: Validation error on empty submission -->
+                <MudAlert Severity="Severity.Warning" Class="mb-4" Dense="true">
+                    Please describe your symptoms before continuing.
+                </MudAlert>
+            }
+
+            @if (_showOllamaError)
+            {
+                <!-- Task 7.1: OllamaUnavailableException feedback -->
+                <MudAlert Severity="Severity.Error" Class="mb-4">
+                    <strong>Ollama is not available.</strong> Please ensure Ollama is running by
+                    executing <code>ollama serve</code> in your terminal, then try again.
+                </MudAlert>
+            }
+
+            <!-- Task 4.1: MudTextField for initial symptom input -->
+            <MudTextField @bind-Value="_symptomInput"
+                          Label="Describe your symptoms"
+                          Variant="Variant.Outlined"
+                          Lines="4"
+                          FullWidth="true"
+                          Class="mb-4"
+                          Disabled="@_isLoading" />
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="StartConversation"
+                       FullWidth="true"
+                       Disabled="@_isLoading">
+                @if (_isLoading)
+                {
+                    <!-- Task 5.6: Animated loading indicator during LLM calls -->
+                    <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                    <span>Connecting...</span>
+                }
+                else
+                {
+                    <span>Start Conversation</span>
+                }
+            </MudButton>
+        </MudPaper>
+    </MudContainer>
+}
+else
+{
+    <MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+
+        @if (_showOllamaError)
+        {
+            <!-- Task 7.1: Error when Ollama is unreachable -->
+            <MudAlert Severity="Severity.Error" Class="mb-4">
+                <strong>Ollama is not available.</strong> Please ensure Ollama is running by
+                executing <code>ollama serve</code> in your terminal.
+            </MudAlert>
+        }
+
+        @if (_showGeneralError)
+        {
+            <!-- Task 7.2: Dismissible general error alert -->
+            <MudAlert Severity="Severity.Warning"
+                      Class="mb-4"
+                      ShowCloseIcon="true"
+                      CloseIconClicked="@(() => _showGeneralError = false)">
+                An error occurred while processing your message. Please try again.
+            </MudAlert>
+        }
+
+        <!-- Task 3.2 / 3.3: Chat history with styled user/assistant messages -->
+        <div class="chat-history" @ref="_chatContainer">
+            @foreach (var message in _messages)
+            {
+                <div class="chat-message @(message.Role == "user" ? "user-message" : "assistant-message")">
+                    <MudPaper Elevation="1" Class="pa-3 chat-bubble">
+                        <MudText Typo="Typo.caption"
+                                 Class="mb-1"
+                                 Color="@(message.Role == "user" ? Color.Primary : Color.Default)">
+                            <strong>@(message.Role == "user" ? "You" : "MedGemma")</strong>
+                        </MudText>
+                        <MudText Style="white-space: pre-wrap;">@message.Content</MudText>
+                    </MudPaper>
+                </div>
+            }
+
+            @if (_isLoading)
+            {
+                <!-- Task 5.6: Animated loading indicator in chat while LLM is processing -->
+                <div class="chat-message assistant-message">
+                    <MudPaper Elevation="1" Class="pa-3 chat-bubble">
+                        <MudText Typo="Typo.caption" Class="mb-1">
+                            <strong>MedGemma</strong>
+                        </MudText>
+                        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-1" />
+                        <MudText Typo="Typo.caption" Color="Color.Default">Thinking...</MudText>
+                    </MudPaper>
+                </div>
+            }
+        </div>
+
+        @if (_summary is not null)
+        {
+            <!-- Task 6.3: Summary in distinct MudAlert block -->
+            <MudAlert Severity="Severity.Info" Class="mb-4 mt-4">
+                <MudText Typo="Typo.h6" Class="mb-2">Session Summary</MudText>
+                <MudText Style="white-space: pre-wrap;">@_summary</MudText>
+                <!-- Task 6.4: Copy to clipboard button -->
+                <div class="mt-3">
+                    <MudButton Variant="Variant.Outlined"
+                               StartIcon="@(_copied ? Icons.Material.Filled.Check : Icons.Material.Filled.ContentCopy)"
+                               Color="@(_copied ? Color.Success : Color.Default)"
+                               Size="Size.Small"
+                               OnClick="CopySummary">
+                        @(_copied ? "Copied!" : "Copy to Clipboard")
+                    </MudButton>
+                </div>
+            </MudAlert>
+        }
+
+        @if (!_sessionEnded)
+        {
+            <!-- Task 5.2: Reply input shown after intake form is dismissed -->
+            <MudPaper Elevation="2" Class="pa-4">
+                <!-- Task 5.3: Disable inputs during LLM calls -->
+                <MudTextField @bind-Value="_currentReply"
+                              Label="Your response"
+                              Variant="Variant.Outlined"
+                              FullWidth="true"
+                              Disabled="@_isLoading"
+                              OnKeyUp="HandleKeyUp"
+                              Class="mb-3" />
+                <div class="d-flex gap-2">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               OnClick="SendReply"
+                               Disabled="@(_isLoading || string.IsNullOrWhiteSpace(_currentReply))">
+                        Send
+                    </MudButton>
+                    <!-- Task 3.4: End Session button — disabled until first LLM response -->
+                    <MudButton Variant="Variant.Outlined"
+                               Color="Color.Warning"
+                               OnClick="EndSessionAsync"
+                               Disabled="@(_isLoading || !_firstResponseReceived)">
+                        End Session
+                    </MudButton>
+                </div>
+            </MudPaper>
+        }
+
+    </MudContainer>
+}
+
+@code {
+    private string _symptomInput = string.Empty;
+    private string _currentReply = string.Empty;
+    private bool _hasStarted;
+    private bool _isLoading;
+    private bool _sessionEnded;
+    private bool _firstResponseReceived;
+    private bool _showValidationError;
+    private bool _showOllamaError;
+    private bool _showGeneralError;
+    private bool _copied;
+    private string? _summary;
+
+    private readonly List<(string Role, string Content)> _messages = [];
+    private ElementReference _chatContainer;
+
+    // Task 4.3 / 5.1: Submit initial symptom, start conversation, invoke LLM
+    private async Task StartConversation()
+    {
+        // Task 4.2: Validate non-empty input
+        if (string.IsNullOrWhiteSpace(_symptomInput))
+        {
+            _showValidationError = true;
+            return;
+        }
+
+        _showValidationError = false;
+        _showOllamaError = false;
+        _hasStarted = true;
+        _messages.Add(("user", _symptomInput));
+        _isLoading = true;
+
+        try
+        {
+            var response = await ConversationService.SendAsync(_symptomInput);
+            _messages.Add(("assistant", response));
+            _firstResponseReceived = true;
+            StateHasChanged();
+            await ScrollToBottom();
+
+            // Task 5.5: Check continuation after rendering LLM question
+            await PerformContinuationCheckAsync();
+        }
+        catch (OllamaUnavailableException)
+        {
+            // Task 7.1: Surface Ollama unavailable error, reset conversation
+            _hasStarted = false;
+            _messages.Clear();
+            _firstResponseReceived = false;
+            _showOllamaError = true;
+        }
+        catch (Exception)
+        {
+            // Task 7.2: Surface general error without crashing the session
+            _showGeneralError = true;
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    // Task 5.2 / 5.3 / 5.4: Send user reply, get LLM response, append to history
+    private async Task SendReply()
+    {
+        if (string.IsNullOrWhiteSpace(_currentReply) || _isLoading)
+            return;
+
+        var reply = _currentReply;
+        _currentReply = string.Empty;
+        _showGeneralError = false;
+        _messages.Add(("user", reply));
+        _isLoading = true;
+
+        try
+        {
+            var response = await ConversationService.SendAsync(reply);
+            _messages.Add(("assistant", response));
+            StateHasChanged();
+            await ScrollToBottom();
+
+            // Task 5.5: Check if conversation should end automatically
+            await PerformContinuationCheckAsync();
+        }
+        catch (OllamaUnavailableException)
+        {
+            _showOllamaError = true;
+        }
+        catch (Exception)
+        {
+            _showGeneralError = true;
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    // Task 5.5: Background continuation check — triggers session end if LLM returns END
+    private async Task PerformContinuationCheckAsync()
+    {
+        try
+        {
+            var shouldContinue = await ConversationService.CheckContinuationAsync();
+            if (!shouldContinue)
+            {
+                await EndSessionInternalAsync();
+            }
+        }
+        catch
+        {
+            // Continuation check failure is non-fatal: session continues normally
+        }
+    }
+
+    // Task 6.1: Extract EndSessionAsync — disables inputs, requests summary, renders result
+    public async Task EndSessionAsync()
+    {
+        if (_sessionEnded || _isLoading)
+            return;
+
+        _isLoading = true;
+        StateHasChanged();
+
+        await EndSessionInternalAsync();
+
+        _isLoading = false;
+        StateHasChanged();
+        await ScrollToBottom();
+    }
+
+    // Task 6.2: Shared end-session logic used by button and auto-termination
+    private async Task EndSessionInternalAsync()
+    {
+        if (_sessionEnded)
+            return;
+
+        _sessionEnded = true;
+
+        try
+        {
+            _summary = await ConversationService.RequestSummaryAsync();
+        }
+        catch (OllamaUnavailableException)
+        {
+            _showOllamaError = true;
+        }
+        catch (Exception)
+        {
+            _showGeneralError = true;
+        }
+    }
+
+    // Task 6.4: Copy summary to clipboard and show Snackbar confirmation
+    private async Task CopySummary()
+    {
+        if (_summary is null)
+            return;
+
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", _summary);
+        _copied = true;
+        Snackbar.Add("Summary copied to clipboard!", Severity.Success);
+        StateHasChanged();
+
+        await Task.Delay(2000);
+        _copied = false;
+        StateHasChanged();
+    }
+
+    private async Task HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !e.ShiftKey)
+        {
+            await SendReply();
+        }
+    }
+
+    private async Task ScrollToBottom()
+    {
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("scrollToBottom", _chatContainer);
+        }
+        catch
+        {
+            // Scroll errors are non-fatal
+        }
+    }
+}

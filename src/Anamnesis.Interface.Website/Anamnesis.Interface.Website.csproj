@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Anamnesis.Interface.Website</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MudBlazor" Version="9.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Anamnesis.Domain\Anamnesis.Domain.csproj" />
+    <ProjectReference Include="..\Anamnesis.Adapter.Ollama.Contract\Anamnesis.Adapter.Ollama.Contract.csproj" />
+    <ProjectReference Include="..\Anamnesis.Adapter.Ollama\Anamnesis.Adapter.Ollama.csproj" />
+    <ProjectReference Include="..\Anamnesis.UseCase.Conversation.Contract\Anamnesis.UseCase.Conversation.Contract.csproj" />
+    <ProjectReference Include="..\Anamnesis.UseCase.Conversation\Anamnesis.UseCase.Conversation.csproj" />
+  </ItemGroup>
+</Project>

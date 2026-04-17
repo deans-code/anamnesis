@@ -1,0 +1,37 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudText Typo="Typo.h5" Class="mr-auto">Anamnesis</MudText>
+        <MudChip T="string"
+                 Icon="@Icons.Material.Filled.HealthAndSafety"
+                 Color="Color.Warning"
+                 Size="Size.Small">
+            Medical Symptom Explorer
+        </MudChip>
+        <MudChip T="string"
+                 Icon="@Icons.Material.Filled.Info"
+                 Color="Color.Info"
+                 Variant="Variant.Outlined"
+                 Size="Size.Small"
+                 Class="ml-1">
+            Not a diagnostic tool
+        </MudChip>
+    </MudAppBar>
+    <MudMainContent Class="pb-16">
+        @Body
+    </MudMainContent>
+    <MudAppBar Bottom="true" Elevation="1" Dense="true" Style="background-color: #f5f5f5;">
+        <MudSpacer />
+        <MudText Typo="Typo.caption" Style="color: #666;">
+            <strong>Medical Disclaimer:</strong> This application is for informational purposes only and is not a substitute for professional medical advice. Always consult a qualified healthcare provider for any medical concerns.
+        </MudText>
+        <MudSpacer />
+    </MudAppBar>
+</MudLayout>
+
