@@ -34,9 +34,15 @@ No known defects.
 
 [GitHub Copilot](https://github.com/features/copilot) was used to assist in the development of this software.
 
-I am using [OpenSpec](https://openspec.dev/) for a specification-driven development approach, which means that I am writing specifications for the software before implementing it.
+I am using [OpenSpec](https://openspec.dev/) for a specification-driven development approach, which means that I am writing specifications for the software before implementing features.
 
-I am trialing the use of Claude Sonnet 4.6 for authoring the specifications, and Qwen 3.6 (running locally via Ollama) for implementing the software based on the specifications.
+I am trialling the use of Claude Sonnet 4.6 for authoring the specifications and Qwen 3.6 (running locally via Ollama) for implementing the software based on the specifications.
+
+I am using custom instructions, skills and agents to guide the implementation.
+
+Initial testing suggests that when completing more complex tasks such as the creation of the initial architecture, Claude Sonnet is more effective. Qwen 3.6 and Gemma 4 running locally on Ollama, and GPT-5 Mini and Haiku 4.5 running on GitHub Copilot all struggled to follow guidance specified in the custom instructions, skills and agents.
+
+The choice of model for implementation may need to be dynamic based on the complexity of the individual specification, with more complex tasks being routed to a more capable model.
 
 ## :rocket: Getting Started
 
