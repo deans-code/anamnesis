@@ -2,79 +2,97 @@
 applyTo: "**"
 ---
 
-## src directory
+# Coding Instructions
 
-Ensure that you use a `src` directory in the root of the repository for all source code.
+These instructions apply to ALL files in this repository. Follow them exactly when generating, editing, or reviewing code.
 
-This can be ignored only when the technology being used specifically requires artifacts to be in the root.
+---
 
-## Separation of Concerns
+## Rule 1: Use a `src` Directory
 
-When implementing a feature, split the code into these basic layers:
+ALWAYS place source code under a `src` directory at the repository root.
 
- - Interface: This layer is responsible for handling user interactions and displaying information. It should contain the code for the user interface, such as controllers, views, and related files.
+Exception: Only place files in the repository root when the specific technology requires it (e.g., a framework that mandates root-level config files).
 
- - Use Case: This layer is responsible for implementing the business logic of the application. It should contain the code for the use cases, such as application services and related files.
+---
 
- - Domain: This layer is responsible for representing the core concepts and rules of the application. It should contain the code for the domain entities, value objects, domain services, and related files.
+## Rule 2: Apply Separation of Concerns to Every Feature
 
- - Adapter: This layer is responsible for integrating with external services or systems. It should contain the code for the adapters, such as API clients, data mappers, and related files.
+When implementing ANY feature, you MUST split code across exactly these four layers. Do not merge layers.
 
-Do this for EVERY feature.
+| Layer | Responsibility | Contains |
+|-------|---------------|----------|
+| **Interface** | User interaction and display | Controllers, views, UI components, CLI commands |
+| **Use Case** | Business logic | Application services, orchestration, workflow logic |
+| **Domain** | Core concepts and rules | Entities, value objects, domain services, domain events |
+| **Adapter** | External system integration | API clients, data mappers, repository implementations |
 
-## Structure
+This applies to EVERY feature, without exception.
 
-Favour the use of .NET projects to separate concerns and organize code.
+---
 
-Ensure that each .NET project exists in a subdirectory of the `src` directory.
+## Rule 3: Use .NET Projects for Each Layer
 
-Use the following structure example:
+Organize code using separate .NET projects under `src/`. Each project follows a strict naming convention.
 
-`<RepositoryName>.Interface.<InterfaceType>`
-  - This project contains the code for the interface layer of the application. It should include all related files for the specific interface.
-  - Example `InterfaceType` values should be based on the technology: Website, API, CLI, etc.
+### Project naming convention
 
-`<RepositoryName>.Interface.<InterfaceType>.Test`
-  - This project contains the test code for the interface layer. It should include unit tests, integration tests, and any other tests related to the interface.
+Replace the placeholders as follows:
+- `{Repo}` — the repository name in PascalCase (e.g., `Anamnesis`)
+- `{Interface}` — the UI technology in PascalCase (e.g., `Website`, `API`, `CLI`)
+- `{UseCase}` — the use case name in PascalCase (e.g., `SymptomIntake`, `SessionSummary`)
+- `{Adapter}` — the external service name in PascalCase (e.g., `Ollama`, `SqlServer`)
 
-`<RepositoryName>.UseCase.<UseCaseName>.Contract`
-  - This project contains the code for the contracts of the use cases. It should include all the request and response models, as well as any other related files.
+### Required projects per layer
 
-`<RepositoryName>.UseCase.<UseCaseName>`
-  - This project contains the code for the use cases of the application. It should include all the business logic and application services.
+**Interface layer**
+- `{Repo}.Interface.{Interface}` — UI entry point and all interface-related files
+- `{Repo}.Interface.{Interface}.Test` — Unit and integration tests for the interface layer
 
-`<RepositoryName>.UseCase.<UseCaseName>.Test`
-  - This project contains the test code for the use cases. It should include unit tests, integration tests, and any other tests related to the use cases.
+**Use Case layer**
+- `{Repo}.UseCase.{UseCase}.Contract` — Request/response models and use case contracts
+- `{Repo}.UseCase.{UseCase}` — Business logic and application services
+- `{Repo}.UseCase.{UseCase}.Test` — Unit and integration tests for the use case
 
-`<RepositoryName>.Domain.Contract`
-  - This project contains the code for the contracts of the domain layer. It should include all the interfaces for the domain services, repositories, and any other related files.
+**Domain layer**
+- `{Repo}.Domain.Contract` — Interfaces for domain services and repositories
+- `{Repo}.Domain` — Entities, value objects, and domain services
+- `{Repo}.Domain.Test` — Unit and integration tests for the domain
 
-`<RepositoryName>.Domain`
-  - This project contains the code for the domain layer of the application. It should include all the domain entities, value objects, and domain services.
+**Adapter layer**
+- `{Repo}.Adapter.{Adapter}.Contract` — Interfaces for the adapter
+- `{Repo}.Adapter.{Adapter}` — Implementation: API clients, data mappers, etc.
+- `{Repo}.Adapter.{Adapter}.Test` — Unit and integration tests for the adapter
 
-`<RepositoryName>.Domain.Test`
-  - This project contains the test code for the domain layer. It should include unit tests, integration tests, and any other tests related to the domain.
+### Example (repository name: `Anamnesis`, use case: `SymptomIntake`, adapter: `Ollama`)
 
-`<RepositoryName>.Adapter.<ExternalServiceName>.Contract`
-  - This project contains the code for the contracts of the adapter that integrates with an external service. It should include all the interfaces and related files for the adapter.
+```
+src/
+  Anamnesis.Interface.Website/
+  Anamnesis.Interface.Website.Test/
+  Anamnesis.UseCase.SymptomIntake.Contract/
+  Anamnesis.UseCase.SymptomIntake/
+  Anamnesis.UseCase.SymptomIntake.Test/
+  Anamnesis.Domain.Contract/
+  Anamnesis.Domain/
+  Anamnesis.Domain.Test/
+  Anamnesis.Adapter.Ollama.Contract/
+  Anamnesis.Adapter.Ollama/
+  Anamnesis.Adapter.Ollama.Test/
+```
 
-`<RepositoryName>.Adapter.<ExternalServiceName>` 
-  - This project contains the code for the adapter that integrates with an external service. It should include all the necessary code to communicate with the external service, such as API clients, data mappers, and related files.
+---
 
-`<RepositoryName>.Adapter.<ExternalServiceName>.Test` 
-  - This project contains the test code for the adapter that integrates with an external service. It should include unit tests, integration tests, and any other tests related to the adapter.
+## Rule 4: Store All Settings in Configuration Files
 
-Where: 
+NEVER hardcode software settings (API endpoints, model names, connection strings, feature flags, timeouts, etc.) in source code.
 
-- `<UseCaseName>` is the name of the use case being implemented, following PascalCase convention.
-- `<InterfaceType>` is the type of interface being implemented, following PascalCase convention.
-- `<RepositoryName>` is the name of the repository, following PascalCase convention.
-- `<ExternalServiceName>` is the name of the external service being integrated with, following PascalCase convention.
+**REQUIRED:**
+- Store all settings in `appsettings.json` (and environment-specific variants).
+- Read settings at application startup via dependency injection.
+- Use environment-specific files where needed: `appsettings.Development.json`, `appsettings.Staging.json`, `appsettings.Production.json`.
 
-## Software settings
-
-All software settings (e.g., API endpoints, model names, feature flags) MUST be stored in configuration files (e.g., `appsettings.json`) and SHOULD be read by the application at startup. These settings SHOULD NOT be hardcoded in the source code.
-
-Use development, staging, and production configuration files as needed (e.g., `appsettings.Development.json`, `appsettings.Staging.json`, `appsettings.Production.json`) to manage environment-specific settings.
-
-Where lower layers (e.g., domain, use case) require access to certain settings, these SHOULD be passed down from the interface layer or injected via dependency injection, rather than having lower layers read configuration files directly. This ensures separation of concerns and makes the code more testable.
+**REQUIRED for lower layers (Domain, Use Case, Adapter):**
+- Do NOT read configuration files directly in lower layers.
+- Settings MUST be passed down from the Interface layer or injected via the DI container.
+- This keeps lower layers testable and free of infrastructure concerns.
