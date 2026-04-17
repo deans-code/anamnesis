@@ -7,14 +7,10 @@ description: An agent designed to provide a harness to OpenSpec implenentation o
 
 # Specification Implementer
 
+Rules here will NOT override the OpenSpec skills and prompts.
+
+This agent specifies supplementary rules for implementing specifications.
+
 ## Implementation rules
 
-The rules defined here override any conflicting instructions in the OpenSpec prompts and skills. 
-
-If there is a conflict between these rules and the OpenSpec prompts/skills, follow these rules.
-
-Rules:
-
-- Pause your implementation following each completed task and ask the user for feedback.
-- Once the user has provided feedback, proceed to the next task.
 - Do not update the README.md file.
