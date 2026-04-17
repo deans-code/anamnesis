@@ -1,4 +1,6 @@
-# Custom Instructions
+---
+applyTo: "**"
+---
 
 ## src directory
 
@@ -28,20 +30,20 @@ Ensure that each .NET project exists in a subdirectory of the `src` directory.
 
 Use the following structure example:
 
-`<RepositoryName>.Interface.<InterfaceName>`
+`<RepositoryName>.Interface.<InterfaceType>`
   - This project contains the code for the interface layer of the application. It should include all related files for the specific interface.
-  - Example `InterfaceName` values could be: Website, API, CLI, etc.
+  - Example `InterfaceType` values should be based on the technology: Website, API, CLI, etc.
 
-`<RepositoryName>.Interface.<InterfaceName>.Test`
+`<RepositoryName>.Interface.<InterfaceType>.Test`
   - This project contains the test code for the interface layer. It should include unit tests, integration tests, and any other tests related to the interface.
 
-`<RepositoryName>.UseCase.Contract`
+`<RepositoryName>.UseCase.<UseCaseName>.Contract`
   - This project contains the code for the contracts of the use cases. It should include all the request and response models, as well as any other related files.
 
-`<RepositoryName>.UseCase`
+`<RepositoryName>.UseCase.<UseCaseName>`
   - This project contains the code for the use cases of the application. It should include all the business logic and application services.
 
-`<RepositoryName>.UseCase.Test`
+`<RepositoryName>.UseCase.<UseCaseName>.Test`
   - This project contains the test code for the use cases. It should include unit tests, integration tests, and any other tests related to the use cases.
 
 `<RepositoryName>.Domain.Contract`
@@ -64,6 +66,8 @@ Use the following structure example:
 
 Where: 
 
+- `<UseCaseName>` is the name of the use case being implemented, following PascalCase convention.
+- `<InterfaceType>` is the type of interface being implemented, following PascalCase convention.
 - `<RepositoryName>` is the name of the repository, following PascalCase convention.
 - `<ExternalServiceName>` is the name of the external service being integrated with, following PascalCase convention.
 
