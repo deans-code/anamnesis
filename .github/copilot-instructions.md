@@ -6,6 +6,12 @@ applyTo: "**"
 
 These instructions apply to ALL files in this repository. Follow them exactly when generating, editing, or reviewing code.
 
+The rules defined here are VERY important:
+
+ - DO NOT skip these rules.
+ - DO NOT decide to take an alternatve approach.
+ - DO NOT prioritise completing tasks quickly.
+
 ---
 
 ## Rule 1: Use a `src` Directory
@@ -18,7 +24,8 @@ Exception: Only place files in the repository root when the specific technology 
 
 ## Rule 2: Apply Separation of Concerns to Every Feature
 
-When implementing ANY feature, you MUST split code across exactly these four layers. Do not merge layers.
+When implementing ANY feature, you MUST split code across exactly these four layers. Do not merge
+layers.
 
 | Layer | Responsibility | Contains |
 |-------|---------------|----------|
@@ -83,7 +90,39 @@ src/
 
 ---
 
-## Rule 4: Store All Settings in Configuration Files
+## Rule 4: Define Interfaces in `.Contract` Projects
+
+Any service, client, repository, or similar class created in the **Adapter**, **Use Case**, or **Domain** layers that is **consumed by another layer** MUST have a corresponding interface defined in the matching `.Contract` project.
+
+**REQUIRED:**
+- If you create `MyService` in `{Repo}.UseCase.{UseCase}` and it is used outside that project, define `IMyService` in `{Repo}.UseCase.{UseCase}.Contract`.
+- If you create `MyClient` in `{Repo}.Adapter.{Adapter}` and it is used outside that project, define `IMyClient` in `{Repo}.Adapter.{Adapter}.Contract`.
+- If you create `MyDomainService` in `{Repo}.Domain` and it is used outside that project, define `IMyDomainService` in `{Repo}.Domain.Contract`.
+- The implementation class MUST implement its interface (e.g., `public class MyService : IMyService`).
+- Consumers MUST depend on the interface, never the concrete class.
+- Interfaces and their implementations MUST be registered with the DI container and injected via constructor injection wherever they are required.
+
+**EXCEPTION:** If a class is only used internally within its own project and is never consumed by another layer, an interface is not required.
+
+---
+
+## Rule 5: Write Unit Tests for Every Service
+
+Any class that has a corresponding interface in a `.Contract` project MUST have unit tests in the matching `.Test` project.
+
+**REQUIRED:**
+- If you create `MyService` in `{Repo}.UseCase.{UseCase}`, add tests in `{Repo}.UseCase.{UseCase}.Test`.
+- If you create `MyClient` in `{Repo}.Adapter.{Adapter}`, add tests in `{Repo}.Adapter.{Adapter}.Test`.
+- If you create `MyDomainService` in `{Repo}.Domain`, add tests in `{Repo}.Domain.Test`.
+- Tests MUST be written against the interface (e.g., `IMyService`), not the concrete class directly.
+- Tests MUST cover the public behaviour of each class, including success paths and expected failure/edge cases.
+- Do NOT leave a `.Test` project empty when a corresponding implementation exists.
+
+**EXCEPTION:** If a class has no interface (i.e., it is internal to its own project), unit tests are not required.
+
+---
+
+## Rule 6: Store All Settings in Configuration Files
 
 NEVER hardcode software settings (API endpoints, model names, connection strings, feature flags, timeouts, etc.) in source code.
 
