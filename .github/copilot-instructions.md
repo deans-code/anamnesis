@@ -66,3 +66,11 @@ Where:
 
 - `<RepositoryName>` is the name of the repository, following PascalCase convention.
 - `<ExternalServiceName>` is the name of the external service being integrated with, following PascalCase convention.
+
+## Software settings
+
+All software settings (e.g., API endpoints, model names, feature flags) MUST be stored in configuration files (e.g., `appsettings.json`) and SHOULD be read by the application at startup. These settings SHOULD NOT be hardcoded in the source code.
+
+Use development, staging, and production configuration files as needed (e.g., `appsettings.Development.json`, `appsettings.Staging.json`, `appsettings.Production.json`) to manage environment-specific settings.
+
+Where lower layers (e.g., domain, use case) require access to certain settings, these SHOULD be passed down from the interface layer or injected via dependency injection, rather than having lower layers read configuration files directly. This ensures separation of concerns and makes the code more testable.
