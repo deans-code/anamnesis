@@ -33,16 +33,3 @@ if (trustScore < TRUST_THRESHOLD)
     return "Session terminated due to anomalous behavior";
 }
 ```
-
-## TODO: Steps to Fix
-
-- [ ] Implement circuit breakers for LLM API failures (e.g., using Polly library)
-- [ ] Add session timeout (e.g., 30 minutes of inactivity)
-- [ ] Implement a kill switch to terminate conversations
-- [ ] Add anomaly detection on conversation patterns (e.g., rapid-fire requests, unusual input patterns)
-- [ ] Add a `BehaviorMonitor` service that tracks request frequency and patterns
-- [ ] Add configuration for thresholds (failure count, timeout, rate limits) in `appsettings.json`
-- [ ] Add a graceful degradation path when circuit breaker trips (e.g., return user-friendly error)
-- [ ] Add unit tests for the circuit breaker covering trip and reset scenarios
-- [ ] Add integration tests verifying that anomalous behavior triggers appropriate responses
-- [ ] Add monitoring/alerting hooks for production deployment

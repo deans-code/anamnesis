@@ -16,4 +16,4 @@ The file must include at the top a checkbox of whether the issue has been addres
 
 The file should include the descriptive content from the initial report, relating to the issue.
 
-It should end with a to-do list of the steps required to fix the issue.
+Do NOT create a to-do list for fixing the issue.

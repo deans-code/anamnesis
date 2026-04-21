@@ -37,13 +37,3 @@ def execute_tool(name: str, args: dict):
     # validate args...
     return tools[name](**validated_args)
 ```
-
-## TODO: Steps to Fix
-
-- [ ] Define an explicit tool allowlist in `OllamaClient` (e.g., `ALLOWED_TOOLS = {"chat"}`)
-- [ ] Add argument validation for all message content (length, character restrictions)
-- [ ] Implement rate limiting on the HTTP client to prevent abuse
-- [ ] Add request/response size limits to prevent denial-of-service
-- [ ] Add a tool governance layer that validates tool names and arguments before execution
-- [ ] Add unit tests for the tool allowlist covering allowed and disallowed tools
-- [ ] Add integration tests verifying that oversized or malformed requests are rejected

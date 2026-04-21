@@ -35,14 +35,3 @@ public void AddMessage(ConversationMessage msg)
         _history.Dequeue();
 }
 ```
-
-## TODO: Steps to Fix
-
-- [ ] Implement conversation history truncation (e.g., keep only last N messages, default 50)
-- [ ] Define explicit capability boundaries (e.g., "this agent can only conduct symptom interviews")
-- [ ] Add session timeout and maximum conversation length limits
-- [ ] Implement a kill switch to terminate conversations
-- [ ] Add a `ConversationHistoryTruncator` service that enforces the maximum history size
-- [ ] Add configuration for max history size in `appsettings.json`
-- [ ] Add unit tests for history truncation at the boundary
-- [ ] Add integration tests verifying that oversized histories are truncated before LLM calls

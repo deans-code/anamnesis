@@ -43,16 +43,3 @@ _auditLogger.Log(new AuditEntry
     SessionId = sessionId
 });
 ```
-
-## TODO: Steps to Fix
-
-- [ ] Create an `IAuditLogger` interface in a new `Anamnesis.Security` project
-- [ ] Implement structured JSONL audit logging for all LLM interactions
-- [ ] Include: timestamp, session ID, input length, output length, policy decision
-- [ ] Store logs in a separate, tamper-evident storage (e.g., Azure Blob Storage with immutability policy)
-- [ ] Add log rotation and retention policies
-- [ ] Add audit logging to `OllamaClient.ChatAsync()` for every LLM call
-- [ ] Add audit logging to `ConversationService.SendAsync()` for every conversation action
-- [ ] Add configuration for audit log path and retention in `appsettings.json`
-- [ ] Add unit tests for the audit logger covering log format and rotation
-- [ ] Add integration tests verifying that audit logs are written for all LLM interactions

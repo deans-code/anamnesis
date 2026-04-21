@@ -36,16 +36,3 @@ if (policyResult.Action == PolicyAction.Deny)
     return "Request blocked by policy";
 var response = await _ollamaClient.ChatAsync(userInput);
 ```
-
-## TODO: Steps to Fix
-
-- [ ] Create a `IPolicyEvaluator` interface in a new `Anamnesis.Security` project
-- [ ] Implement a deterministic policy layer (e.g., keyword filtering, regex-based detection) before LLM calls
-- [ ] Define safety rules as configuration (e.g., YAML or JSON rules file) rather than code
-- [ ] Add output validation to detect and block harmful LLM responses
-- [ ] Ensure policy checks cannot be bypassed or overridden by the agent
-- [ ] Implement fail-closed behavior (if policy check errors, deny the action)
-- [ ] Inject `IPolicyEvaluator` into `ConversationService` and apply before each LLM call
-- [ ] Add unit tests for the policy evaluator covering allowed and denied inputs/outputs
-- [ ] Add integration tests verifying that policy violations are blocked before reaching the LLM
-- [ ] Add tests for edge cases (empty policy config, malformed rules, policy engine errors)

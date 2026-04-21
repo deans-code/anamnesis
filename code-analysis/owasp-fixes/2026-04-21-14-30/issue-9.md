@@ -27,14 +27,3 @@ The application has no supply chain integrity mechanisms. Dependencies are manag
 <!-- GOOD: Dependency pinning with upper bounds -->
 <PackageReference Include="MudBlazor" Version=">= 9.3.0 < 10.0.0" />
 ```
-
-## TODO: Steps to Fix
-
-- [ ] Generate an SBOM for the project (e.g., using `dotnet-sbom` or `syft`)
-- [ ] Implement dependency pinning with upper bounds (e.g., `>= 9.3.0 < 10.0.0`)
-- [ ] Add integrity verification for all dependencies (e.g., `dotnet restore --ignore-failed-sources`)
-- [ ] Consider using a private NuGet feed with signed packages
-- [ ] Add a CI/CD step that validates the SBOM on every build
-- [ ] Add a `DEPENDENCIES.md` file documenting all dependencies and their versions
-- [ ] Add unit tests for dependency integrity verification
-- [ ] Add a pre-commit hook that checks for unpinning of dependencies

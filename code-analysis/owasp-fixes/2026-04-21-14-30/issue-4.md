@@ -23,13 +23,3 @@ The application has no privilege model. While this is a local single-user applic
 if (!user.HasPrivilege(PrivilegeLevel.Admin))
     throw new UnauthorizedAccessException("Insufficient privileges");
 ```
-
-## TODO: Steps to Fix
-
-- [ ] Document the current single-user/local-only threat model and its implications
-- [ ] If multi-user support is planned, design an authentication strategy (e.g., ASP.NET Identity)
-- [ ] Add role-based access control for any administrative features
-- [ ] Ensure the agent cannot modify its own system prompt or configuration at runtime
-- [ ] Add a configuration validation layer that prevents runtime modification of safety-critical settings
-- [ ] Add unit tests verifying that configuration cannot be modified after initialization
-- [ ] Add integration tests for future authentication/authorization when implemented
