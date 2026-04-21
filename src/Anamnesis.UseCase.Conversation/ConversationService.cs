@@ -1,6 +1,7 @@
 using Anamnesis.Adapter.Ollama.Contract;
 using Anamnesis.Domain;
 using Anamnesis.UseCase.Conversation.Contract;
+using System.Text.RegularExpressions;
 
 namespace Anamnesis.UseCase.Conversation;
 
@@ -41,7 +42,7 @@ public class ConversationService : IConversationService
         };
 
         var response = await _ollamaClient.ChatAsync(checkMessages);
-        return !response.Trim().Contains("END", StringComparison.OrdinalIgnoreCase);
+        return !Regex.IsMatch(response.Trim(), @"\bEND\b", RegexOptions.IgnoreCase);
     }
 
     public async Task<string> RequestSummaryAsync()

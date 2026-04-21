@@ -50,11 +50,11 @@
 
 ## 8. Polish & Validation
 
-- [ ] 8.1 Test full conversation flow end-to-end with Ollama running MedGemma
-- [ ] 8.2 Test automatic session end when LLM returns `END` from continuation check
-- [ ] 8.3 Test manual "End Session" button triggers summary correctly
-- [ ] 8.4 Test with Ollama stopped and confirm the `OllamaUnavailableException` error message is shown
-- [ ] 8.5 Test empty input validation on the intake form
-- [ ] 8.6 Test session summary generation and clipboard copy
-- [ ] 8.7 Confirm the animated loading indicator appears during all LLM calls
-- [ ] 8.8 Confirm the medical disclaimer is visible at all times (AppBar and footer)
+- [x] 8.1 Test full conversation flow end-to-end with Ollama running MedGemma
+- [x] 8.2 Test automatic session end when LLM returns `END` from continuation check
+- [x] 8.3 Test manual "End Session" button triggers summary correctly
+- [x] 8.4 Test with Ollama stopped and confirm the `OllamaUnavailableException` error message is shown
+- [x] 8.5 Test empty input validation on the intake form
+- [x] 8.6 Test session summary generation and clipboard copy
+- [x] 8.7 Confirm the animated loading indicator appears during all LLM calls
+- [x] 8.8 Confirm the medical disclaimer is visible at all times (AppBar and footer)
