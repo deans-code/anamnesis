@@ -32,7 +32,11 @@ No known defects.
 
 ## :crystal_ball: Use of AI
 
+### AI-assisted development
+
 [GitHub Copilot](https://github.com/features/copilot) was used to assist in the development of this software.
+
+### Spec-driven development with OpenSpec
 
 I am using [OpenSpec](https://openspec.dev/) for a specification-driven development approach, which means that I am writing specifications for the software before implementing features.
 
@@ -44,13 +48,25 @@ Initial testing suggests that when completing more complex tasks such as the cre
 
 The choice of model for implementation may need to be dynamic based on the complexity of the individual specification, with more complex tasks being routed to a more capable model.
 
+### Awsome GitHub Copilot
+
+I am using selected add-ons from the [Awsome GitHub Copilot](https://awesome-copilot.github.com/) collection.
+
+Installed using GitHub CLI.
+
 ## :rocket: Getting Started
 
 ### :computer: System Requirements
 
 #### Software
 
-TBC
+##### GitHub CLI
+
+For installing GitHub Copilot Skills, you will need the GitHub CLI:
+
+```
+https://github.com/cli/cli/blob/trunk/docs/install_windows.md
+```
 
 #### Visual Studio extensions
 
