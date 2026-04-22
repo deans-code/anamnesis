@@ -1,6 +1,8 @@
-- [ ] Addressed
-
 # ASI-08: Policy Bypass — No Deterministic Policy Enforcement
+
+## Status
+
+- [ ] Addressed
 
 ## Risk
 

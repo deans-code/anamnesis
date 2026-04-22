@@ -1,6 +1,8 @@
-- [ ] Addressed
-
 # ASI-01: Prompt Injection — User Input Not Validated Before LLM Calls
+
+## Status
+
+- [ ] Addressed
 
 ## Risk
 

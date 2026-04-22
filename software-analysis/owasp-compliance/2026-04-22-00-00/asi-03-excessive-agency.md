@@ -1,6 +1,8 @@
-- [ ] Addressed
-
 # ASI-03: Excessive Agency — No Capability Boundaries
+
+## Status
+
+- [ ] Addressed
 
 ## Risk
 

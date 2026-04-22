@@ -1,6 +1,8 @@
-- [ ] Addressed
-
 # ASI-06: Insufficient Logging — No Audit Trail for Agent Actions
+
+## Status
+
+- [ ] Addressed
 
 ## Risk
 

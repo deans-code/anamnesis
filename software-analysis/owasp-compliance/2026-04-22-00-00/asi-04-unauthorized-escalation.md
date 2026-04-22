@@ -1,6 +1,8 @@
-- [ ] Addressed
-
 # ASI-04: Unauthorized Escalation — No Privilege Escalation Mechanisms Present
+
+## Status
+
+- [ ] Addressed
 
 ## Risk
 

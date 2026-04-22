@@ -1,6 +1,8 @@
-- [ ] Addressed
-
 # ASI-02: Insecure Tool Use — Unrestricted HTTP Tool Access
+
+## Status
+
+- [ ] Addressed
 
 ## Risk
 

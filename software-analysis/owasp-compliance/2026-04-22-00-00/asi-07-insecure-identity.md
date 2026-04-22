@@ -1,6 +1,8 @@
-- [ ] Addressed
-
 # ASI-07: Insecure Identity — No Cryptographic Agent Identity
+
+## Status
+
+- [ ] Addressed
 
 ## Risk
 

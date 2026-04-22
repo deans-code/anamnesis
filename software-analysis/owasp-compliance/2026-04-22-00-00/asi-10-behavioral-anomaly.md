@@ -1,6 +1,8 @@
-- [ ] Addressed
-
 # ASI-10: Behavioral Anomaly — No Monitoring or Circuit Breakers
+
+## Status
+
+- [ ] Addressed
 
 ## Risk
 

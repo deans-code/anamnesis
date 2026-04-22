@@ -1,6 +1,8 @@
-- [ ] Addressed
-
 # ASI-09: Supply Chain Integrity — No Dependency Integrity Verification
+
+## Status
+
+- [ ] Addressed
 
 ## Risk
 

@@ -1,6 +1,8 @@
-- [ ] Addressed
-
 # ASI-05: Trust Boundary Violation — Blind Trust of LLM Responses
+
+## Status
+
+- [ ] Addressed
 
 ## Risk
 
