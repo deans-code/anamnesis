@@ -14,7 +14,9 @@ Ensure that all reported issues are focused on one specific aspect of OWASP comp
 
 Ensure that all suggested fixes are focused on one specific aspect of OWASP compliance.
 
-Ensure that all suggested fixes are provided in the appropriate programming language to match the code they intend to fix.
+Ensure that all suggested fixes are provided in the appropriate programming language, to match the code they intend to fix.
+
+Ensure that issues focus on the current state of the software, not on hypothetical future features or capabilities.
 
 ## Document
 
@@ -28,6 +30,8 @@ The file must include a checkbox at the top, indicating whether the issue has be
 
 The file should include the descriptive content from the initial report, relating to the issue.
 
+Also create a OWASP ASI Compliance Report file in the same directory, summarizing all identified issues and their status.
+
 ## Plan
 
-Do NOT create a to-do list for fixing the issue.
+Do NOT create a to-do list for fixing each issue.
