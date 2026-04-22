@@ -6,6 +6,12 @@
     <RootNamespace>Anamnesis.UseCase.Conversation</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="Anamnesis.UseCase.Conversation.Test" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.6" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Anamnesis.Domain\Anamnesis.Domain.csproj" />
     <ProjectReference Include="..\Anamnesis.Adapter.Ollama.Contract\Anamnesis.Adapter.Ollama.Contract.csproj" />
     <ProjectReference Include="..\Anamnesis.UseCase.Conversation.Contract\Anamnesis.UseCase.Conversation.Contract.csproj" />

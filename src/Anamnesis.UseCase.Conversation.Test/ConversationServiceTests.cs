@@ -9,11 +9,13 @@ namespace Anamnesis.UseCase.Conversation.Test;
 public class ConversationServiceTests
 {
     private readonly IOllamaClient _ollamaClient = Substitute.For<IOllamaClient>();
+    private readonly IAuditLogger _auditLogger = Substitute.For<IAuditLogger>();
     private readonly IConversationService _sut;
 
     public ConversationServiceTests()
     {
-        _sut = new ConversationService(_ollamaClient);
+        _auditLogger.LogAsync(Arg.Any<AuditEntry>()).Returns(Task.CompletedTask);
+        _sut = new ConversationService(_ollamaClient, _auditLogger);
     }
 
     [Fact]
@@ -74,6 +76,18 @@ public class ConversationServiceTests
         var result = await _sut.CheckContinuationAsync();
 
         Assert.False(result);
+    }
+
+    [Fact]
+    public async Task CheckContinuationAsync_ReturnsTrue_WhenLlmReturnsUnrecognisedValue()
+    {
+        _ollamaClient.ChatAsync(Arg.Any<IEnumerable<ConversationMessage>>())
+            .Returns("ok", "MAYBE");
+
+        await _sut.SendAsync("I feel unwell.");
+        var result = await _sut.CheckContinuationAsync();
+
+        Assert.True(result);
     }
 
     [Fact]

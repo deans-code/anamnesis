@@ -26,6 +26,13 @@
                 </MudAlert>
             }
 
+            @if (_inputBlockedMessage is not null)
+            {
+                <MudAlert Severity="Severity.Warning" Class="mb-4" Dense="true">
+                    @_inputBlockedMessage
+                </MudAlert>
+            }
+
             @if (_showOllamaError)
             {
                 <!-- Task 7.1: OllamaUnavailableException feedback -->
@@ -141,6 +148,15 @@ else
         {
             <!-- Task 5.2: Reply input shown after intake form is dismissed -->
             <MudPaper Elevation="2" Class="pa-4">
+                @if (_inputBlockedMessage is not null)
+                {
+                    <MudAlert Severity="Severity.Warning" Class="mb-3" Dense="true"
+                              ShowCloseIcon="true"
+                              CloseIconClicked="@(() => _inputBlockedMessage = null)">
+                        @_inputBlockedMessage
+                    </MudAlert>
+                }
+
                 <!-- Task 5.3: Disable inputs during LLM calls -->
                 <MudTextField @bind-Value="_currentReply"
                               Label="Your response"
@@ -171,6 +187,20 @@ else
 }
 
 @code {
+    private const int MaxMessageLength = 4096;
+
+    private static readonly System.Text.RegularExpressions.Regex[] _injectionPatterns =
+    [
+        new("ignore\\s+(?:all\\s+)?(?:previous|prior|above)\\s+instructions?",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Compiled),
+        new("you\\s+are\\s+now\\b",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Compiled),
+        new("disregard\\s+(?:your\\s+)?(?:system\\s+prompt|instructions?|previous|all)",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Compiled),
+        new("forget\\s+(?:all\\s+)?(?:previous|prior|above|your)\\s+instructions?",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Compiled),
+    ];
+
     private string _symptomInput = string.Empty;
     private string _currentReply = string.Empty;
     private bool _hasStarted;
@@ -182,9 +212,39 @@ else
     private bool _showGeneralError;
     private bool _copied;
     private string? _summary;
+    private string? _inputBlockedMessage;
 
     private readonly List<(string Role, string Content)> _messages = [];
     private ElementReference _chatContainer;
+
+    private bool ValidateInput(string input)
+    {
+        try
+        {
+            if (input.Length > MaxMessageLength)
+            {
+                _inputBlockedMessage = "Your message is too long. Please shorten your input and try again.";
+                return false;
+            }
+
+            foreach (var pattern in _injectionPatterns)
+            {
+                if (pattern.IsMatch(input))
+                {
+                    _inputBlockedMessage = "Your request was blocked by the content policy. Please rephrase and try again.";
+                    return false;
+                }
+            }
+
+            _inputBlockedMessage = null;
+            return true;
+        }
+        catch
+        {
+            _inputBlockedMessage = "Your request could not be processed. Please try again.";
+            return false;
+        }
+    }
 
     // Task 4.3 / 5.1: Submit initial symptom, start conversation, invoke LLM
     private async Task StartConversation()
@@ -195,6 +255,9 @@ else
             _showValidationError = true;
             return;
         }
+
+        if (!ValidateInput(_symptomInput))
+            return;
 
         _showValidationError = false;
         _showOllamaError = false;
@@ -218,7 +281,7 @@ else
             // Task 7.1: Surface Ollama unavailable error, reset conversation
             _hasStarted = false;
             _messages.Clear();
-            _firstResponseReceived = false;
+            _firstResponseReceived = false; 
             _showOllamaError = true;
         }
         catch (Exception)
@@ -236,6 +299,9 @@ else
     private async Task SendReply()
     {
         if (string.IsNullOrWhiteSpace(_currentReply) || _isLoading)
+            return;
+
+        if (!ValidateInput(_currentReply))
             return;
 
         var reply = _currentReply;

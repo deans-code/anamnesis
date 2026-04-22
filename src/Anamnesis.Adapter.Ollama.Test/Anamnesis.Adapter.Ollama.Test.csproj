@@ -14,7 +14,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="NSubstitute" Version="5.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.6" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Anamnesis.Domain\Anamnesis.Domain.csproj" />

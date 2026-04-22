@@ -79,6 +79,18 @@ public class OllamaClientTests
 
         await Assert.ThrowsAsync<OllamaUnavailableException>(() => client.ChatAsync(messages));
     }
+
+    [Fact]
+    public async Task ChatAsync_ThrowsArgumentException_WhenMessageHistoryExceeds200Entries()
+    {
+        var handler = new MockHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.OK));
+        var client = CreateClient(handler);
+        var messages = Enumerable.Range(0, 201)
+            .Select(i => new ConversationMessage("user", $"message {i}"))
+            .ToList();
+
+        await Assert.ThrowsAsync<ArgumentException>(() => client.ChatAsync(messages));
+    }
 }
 
 internal class MockHttpMessageHandler(HttpResponseMessage response) : HttpMessageHandler
