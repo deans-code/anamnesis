@@ -124,3 +124,20 @@ NEVER hardcode software settings (API endpoints, model names, connection strings
 - Do NOT read configuration files directly in lower layers.
 - Settings MUST be passed down from the Interface layer or injected via the DI container.
 - This keeps lower layers testable and free of infrastructure concerns.
+
+## Rule 7: Implement Security as a Crosscutting Concern
+
+Security is NOT a use case. Do NOT create a dedicated use case layer project for security.
+
+Security is a crosscutting concern that MUST be implemented within each layer according to what the security code is addressing:
+
+| Security concern | Where to implement |
+|-----------------|-------------------|
+| User input validation within forms | **Interface** (`{Repo}.Interface.{Interface}`) |
+| Policy enforcement specific to a business function | **Use Case** (`{Repo}.UseCase.{UseCase}`) |
+| Security concerns specific to an external system | **Adapter** (`{Repo}.Adapter.{Adapter}`) |
+
+**REQUIRED:**
+- Implement security at the layer responsible for the concern, not in a separate dedicated project.
+- Do NOT centralise all security logic into one place if it belongs to different layers.
+
