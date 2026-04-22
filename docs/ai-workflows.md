@@ -15,8 +15,8 @@ Key findings relating to this workflow when creating the initial architecture we
 - Qwen 3.6 and Gemma 4 running locally on Ollama, and GPT-5 Mini and Haiku 4.5 running on GitHub Copilot all struggled to implement the specification while also following additional instructions specified in the custom instructions, skills and agents.
 - For initial architecture creation, it is likely more effective to use a single capable model, such as Claude Sonnet 4.6, for both specification and implementation, to ensure the best possible guidance and output.
 
-> ![NOTE]
-> The key takeaway from this workflow is that the lightweight models tested did not consistently adhere to instructions specified in the custom instructions, skills and agents. These instructions primarily defined an architecture to implement. This could be limited to when the application is greenfield in nature, updates to an existing application where example code can be provided may be more effective, or it may be that the lightweight models tested are not suitable for this purpose regardless of the context. Further testing is needed to explore this.
+> [!NOTE]
+> The key takeaway from this workflow is that the lightweight models tested did not consistently adhere to instructions specified in the custom instructions, skills and agents. These instructions primarily defined an architecture to implement. This could be limited to when the application is greenfield in nature, updates to an existing application where example code can be provided may be more effective, or it may be that the lightweight models tested are not suitable for this purpose regardless of the context. Further testing is needed.
 
 ## OWASP review and remediation
 

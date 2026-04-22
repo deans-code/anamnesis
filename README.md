@@ -72,9 +72,7 @@ I am then using OpenSpec to author a detailed remediation specification based on
 
 For installing GitHub Copilot Skills, you will need the GitHub CLI:
 
-```
 https://github.com/cli/cli/blob/trunk/docs/install_windows.md
-```
 
 #### Hardware
 
@@ -109,7 +107,7 @@ Simple chat interface for exploring medical conditions and symptoms.
 
 The application is designed to help individuals understand potential medical conditions based on symptoms they input, and to suggest follow-up questions that a healthcare provider might ask to gather more information.
 
-> ![WARNING]
+> [!WARNING]
 > This software is designed for testing and educational purposes only. It is not intended for real medical use and should not be used as a substitute for professional medical advice, diagnosis, or treatment.
 
 ## :paperclip: Usage
