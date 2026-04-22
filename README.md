@@ -21,6 +21,7 @@ The application is a simple web based chat interface which helps a user explore 
  - [x] Simple web interface.
  - [x] Collect patient information.
  - [x] Propose questions to ask the patient.
+ - [ ] Define effective method of reviewing OWASP remediation implementation (manual, partially automated, fully automated?).
 
 ## :telescope: Future Gazing
 
@@ -61,6 +62,9 @@ I am then using OpenSpec to author a detailed remediation specification based on
 
 > [!NOTE]
 > I am using using Qwen 3.6 (running locally via Ollama) for the OWASP review. The OpenSpec remediation specification is being created using Claude Sonnet 4.6. This is under test, initial indications are that Qwen 3.6 creates acceptable reviews but struggles to create detailed specifications based on the review.
+
+> [!WARNING]
+> I am using this software as a playground for establishing effective workflows. The OWASP review and remediation process is under development and may not be effective at identifying or remediating all security issues. It should not be relied upon for real world security reviews or remediation purposes but could be used as a basis for further development of an effective process.
 
 ## :rocket: Getting Started
 
