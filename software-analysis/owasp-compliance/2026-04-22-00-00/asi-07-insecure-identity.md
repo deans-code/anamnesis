@@ -2,7 +2,7 @@
 
 ## Status
 
-- [ ] Addressed
+- [x] Addressed
 
 ## Risk
 
