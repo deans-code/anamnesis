@@ -6,7 +6,7 @@
     <RootNamespace>Anamnesis.Interface.Website</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MudBlazor" Version="9.3.0" />
+    <PackageReference Include="MudBlazor" Version="9.4.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Anamnesis.Domain\Anamnesis.Domain.csproj" />
