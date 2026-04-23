@@ -29,7 +29,7 @@ public class FileAuditLoggerTests : IDisposable
         await _sut.LogAsync(entry);
 
         var lines = await File.ReadAllLinesAsync(_logFile);
-        Assert.Single(lines.Where(l => !string.IsNullOrWhiteSpace(l)));
+        Assert.Single(lines, l => !string.IsNullOrWhiteSpace(l));
 
         var written = JsonSerializer.Deserialize<AuditEntry>(lines[0]);
         Assert.NotNull(written);
