@@ -216,6 +216,7 @@ else
 
     private readonly List<(string Role, string Content)> _messages = [];
     private ElementReference _chatContainer;
+    private int _exchangeCount;
 
     private bool ValidateInput(string input)
     {
@@ -270,6 +271,7 @@ else
             var response = await ConversationService.SendAsync(_symptomInput);
             _messages.Add(("assistant", response));
             _firstResponseReceived = true;
+            _exchangeCount++;
             StateHasChanged();
             await ScrollToBottom();
 
@@ -314,6 +316,7 @@ else
         {
             var response = await ConversationService.SendAsync(reply);
             _messages.Add(("assistant", response));
+            _exchangeCount++;
             StateHasChanged();
             await ScrollToBottom();
 
@@ -334,9 +337,14 @@ else
         }
     }
 
+    private const int MinExchangesBeforeContinuationCheck = 3;
+
     // Task 5.5: Background continuation check — triggers session end if LLM returns END
     private async Task PerformContinuationCheckAsync()
     {
+        if (_exchangeCount < MinExchangesBeforeContinuationCheck)
+            return;
+
         try
         {
             var shouldContinue = await ConversationService.CheckContinuationAsync();
