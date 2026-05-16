@@ -1,3 +1,5 @@
+using Anamnesis.Domain;
+
 namespace Anamnesis.UseCase.Conversation.Contract;
 
 public interface IConversationService
@@ -9,4 +11,6 @@ public interface IConversationService
     Task<bool> CheckContinuationAsync();
 
     Task<string> RequestSummaryAsync();
+
+    Task<SidebarResult> GetRelatedConditionsAsync();
 }

@@ -29,6 +29,28 @@ internal static class PromptTemplates
         This summary is for the user to share with their healthcare provider. Provide the summary only — no questions, no follow-ups.
         """;
 
+    public const string SidebarPrompt = """
+        Based on the conversation so far, list the medical conditions and symptoms that may be relevant to what the user has described.
+
+        Return ONLY valid JSON in this exact format — no markdown, no code fences, no explanation:
+        {
+          "conditions": [
+            { "name": "<primary name>", "synonyms": ["<alternate name>", "<lay term>", "<medical term>"] }
+          ],
+          "symptoms": [
+            { "name": "<primary name>", "synonyms": ["<alternate name>", "<lay term>", "<medical term>"] }
+          ]
+        }
+
+        Rules:
+        - Include only conditions and symptoms you are confident exist on the NHS website (https://www.nhs.uk)
+        - Use the exact name or a common alternate name that would appear on an NHS page
+        - Include 2–4 synonyms per entry to maximise the chance of matching an NHS page title
+        - List up to 5 conditions and up to 5 symptoms
+        - If nothing relevant has been discussed yet, return { "conditions": [], "symptoms": [] }
+        - Do NOT include diagnoses or speculate beyond what the user has described
+        """;
+
     public const string ContinuationCheckPrompt = """
         Review the conversation so far. Assess how thoroughly you have explored the reported symptoms.
 

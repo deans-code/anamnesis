@@ -1,5 +1,6 @@
 using Anamnesis.Adapter.Ollama;
 using Anamnesis.Adapter.Ollama.Contract;
+using Anamnesis.Interface.Website;
 using Anamnesis.UseCase.Conversation;
 using Anamnesis.UseCase.Conversation.Contract;
 using Microsoft.Extensions.Options;
@@ -53,6 +54,18 @@ builder.Services.AddHttpClient<IOllamaClient, OllamaClient>((serviceProvider, cl
 
 builder.Services.Configure<AuditLoggingSettings>(
     builder.Configuration.GetSection("AuditLogging"));
+
+builder.Services.AddHttpClient("nhs", client =>
+{
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("Anamnesis/1.0");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+builder.Services.AddSingleton<INhsIndexService>(sp =>
+{
+    var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("nhs");
+    var logger = sp.GetRequiredService<ILogger<NhsIndexService>>();
+    return new NhsIndexService(httpClient, logger);
+});
 
 builder.Services.AddScoped<IAuditLogger, FileAuditLogger>();
 builder.Services.AddScoped<IConversationService, ConversationService>();

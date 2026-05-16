@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Anamnesis.Adapter.Ollama.Contract;
 using Anamnesis.Domain;
 using Anamnesis.UseCase.Conversation.Contract;
@@ -8,14 +9,16 @@ public class ConversationService : IConversationService
 {
     private readonly IOllamaClient _ollamaClient;
     private readonly IAuditLogger _auditLogger;
+    private readonly INhsIndexService _nhsIndexService;
     private readonly List<ConversationMessage> _history = [];
     private bool _systemPromptAdded;
     private readonly string _sessionId = Guid.NewGuid().ToString("N");
 
-    public ConversationService(IOllamaClient ollamaClient, IAuditLogger auditLogger)
+    public ConversationService(IOllamaClient ollamaClient, IAuditLogger auditLogger, INhsIndexService nhsIndexService)
     {
         _ollamaClient = ollamaClient;
         _auditLogger = auditLogger;
+        _nhsIndexService = nhsIndexService;
 
         _ = _auditLogger.LogAsync(new AuditEntry(
             Timestamp: DateTimeOffset.UtcNow,
@@ -116,6 +119,77 @@ public class ConversationService : IConversationService
         };
 
         return await _ollamaClient.ChatAsync(summaryMessages);
+    }
+
+    public async Task<SidebarResult> GetRelatedConditionsAsync()
+    {
+        var messages = new List<ConversationMessage>(_history)
+        {
+            new ConversationMessage("user", PromptTemplates.SidebarPrompt)
+        };
+
+        try
+        {
+            var response = await _ollamaClient.ChatAsync(messages);
+            return await ParseSidebarResponseAsync(response);
+        }
+        catch
+        {
+            return new SidebarResult([], []);
+        }
+    }
+
+    private async Task<SidebarResult> ParseSidebarResponseAsync(string response)
+    {
+        try
+        {
+            var jsonStart = response.IndexOf('{');
+            var jsonEnd = response.LastIndexOf('}');
+            if (jsonStart < 0 || jsonEnd <= jsonStart)
+                return new SidebarResult([], []);
+
+            var json = response[jsonStart..(jsonEnd + 1)];
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+
+            var conditions = await ResolveEntriesAsync(root, "conditions", NhsIndexType.Conditions);
+            var symptoms = await ResolveEntriesAsync(root, "symptoms", NhsIndexType.Symptoms);
+
+            return new SidebarResult(conditions, symptoms);
+        }
+        catch
+        {
+            return new SidebarResult([], []);
+        }
+    }
+
+    private async Task<IReadOnlyList<RelatedCondition>> ResolveEntriesAsync(
+        JsonElement root, string arrayProperty, NhsIndexType indexType)
+    {
+        if (!root.TryGetProperty(arrayProperty, out var array) || array.ValueKind != JsonValueKind.Array)
+            return [];
+
+        var results = new List<RelatedCondition>();
+        foreach (var item in array.EnumerateArray())
+        {
+            var name = item.TryGetProperty("name", out var nameProp) ? nameProp.GetString() ?? string.Empty : string.Empty;
+            if (string.IsNullOrWhiteSpace(name)) continue;
+
+            var synonyms = new List<string>();
+            if (item.TryGetProperty("synonyms", out var synProp) && synProp.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var s in synProp.EnumerateArray())
+                {
+                    var sv = s.GetString();
+                    if (!string.IsNullOrWhiteSpace(sv)) synonyms.Add(sv);
+                }
+            }
+
+            var url = await _nhsIndexService.ResolveUrlAsync(name, synonyms, indexType);
+            results.Add(new RelatedCondition(name, synonyms, url));
+        }
+
+        return results;
     }
 }
 

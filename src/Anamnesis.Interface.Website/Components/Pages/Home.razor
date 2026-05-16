@@ -72,118 +72,203 @@
 }
 else
 {
-    <MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <!-- Task 4.1 / Task 3.1: Two-column layout — chat (8/12) and sidebar (4/12) -->
+    <MudGrid Class="mt-4 px-4" Spacing="3">
 
-        @if (_showOllamaError)
-        {
-            <!-- Task 7.1: Error when Ollama is unreachable -->
-            <MudAlert Severity="Severity.Error" Class="mb-4">
-                <strong>Ollama is not available.</strong> Please ensure Ollama is running by
-                executing <code>ollama serve</code> in your terminal.
-            </MudAlert>
-        }
+        <!-- Left column: chat -->
+        <MudItem xs="12" md="8">
 
-        @if (_showGeneralError)
-        {
-            <!-- Task 7.2: Dismissible general error alert -->
-            <MudAlert Severity="Severity.Warning"
-                      Class="mb-4"
-                      ShowCloseIcon="true"
-                      CloseIconClicked="@(() => _showGeneralError = false)">
-                An error occurred while processing your message. Please try again.
-            </MudAlert>
-        }
-
-        <!-- Task 3.2 / 3.3: Chat history with styled user/assistant messages -->
-        <div class="chat-history" @ref="_chatContainer">
-            @foreach (var message in _messages)
+            @if (_showOllamaError)
             {
-                <div class="chat-message @(message.Role == "user" ? "user-message" : "assistant-message")">
-                    <MudPaper Elevation="1" Class="pa-3 chat-bubble">
-                        <MudText Typo="Typo.caption"
-                                 Class="mb-1"
-                                 Color="@(message.Role == "user" ? Color.Primary : Color.Default)">
-                            <strong>@(message.Role == "user" ? "You" : "MedGemma")</strong>
-                        </MudText>
-                        <MudText Style="white-space: pre-wrap;">@message.Content</MudText>
-                    </MudPaper>
-                </div>
+                <!-- Task 7.1: Error when Ollama is unreachable -->
+                <MudAlert Severity="Severity.Error" Class="mb-4">
+                    <strong>Ollama is not available.</strong> Please ensure Ollama is running by
+                    executing <code>ollama serve</code> in your terminal.
+                </MudAlert>
             }
 
-            @if (_isLoading)
+            @if (_showGeneralError)
             {
-                <!-- Task 5.6: Animated loading indicator in chat while LLM is processing -->
-                <div class="chat-message assistant-message">
-                    <MudPaper Elevation="1" Class="pa-3 chat-bubble">
-                        <MudText Typo="Typo.caption" Class="mb-1">
-                            <strong>MedGemma</strong>
-                        </MudText>
-                        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-1" />
-                        <MudText Typo="Typo.caption" Color="Color.Default">Thinking...</MudText>
-                    </MudPaper>
-                </div>
+                <!-- Task 7.2: Dismissible general error alert -->
+                <MudAlert Severity="Severity.Warning"
+                          Class="mb-4"
+                          ShowCloseIcon="true"
+                          CloseIconClicked="@(() => _showGeneralError = false)">
+                    An error occurred while processing your message. Please try again.
+                </MudAlert>
             }
-        </div>
 
-        @if (_summary is not null)
-        {
-            <!-- Task 6.3: Summary in distinct MudAlert block -->
-            <MudAlert Severity="Severity.Info" Class="mb-4 mt-4">
-                <MudText Typo="Typo.h6" Class="mb-2">Session Summary</MudText>
-                <MudText Style="white-space: pre-wrap;">@_summary</MudText>
-                <!-- Task 6.4: Copy to clipboard button -->
-                <div class="mt-3">
-                    <MudButton Variant="Variant.Outlined"
-                               StartIcon="@(_copied ? Icons.Material.Filled.Check : Icons.Material.Filled.ContentCopy)"
-                               Color="@(_copied ? Color.Success : Color.Default)"
-                               Size="Size.Small"
-                               OnClick="CopySummary">
-                        @(_copied ? "Copied!" : "Copy to Clipboard")
-                    </MudButton>
-                </div>
-            </MudAlert>
-        }
-
-        @if (!_sessionEnded)
-        {
-            <!-- Task 5.2: Reply input shown after intake form is dismissed -->
-            <MudPaper Elevation="2" Class="pa-4">
-                @if (_inputBlockedMessage is not null)
+            <!-- Task 3.2 / 3.3: Chat history with styled user/assistant messages -->
+            <div class="chat-history" @ref="_chatContainer">
+                @foreach (var message in _messages)
                 {
-                    <MudAlert Severity="Severity.Warning" Class="mb-3" Dense="true"
-                              ShowCloseIcon="true"
-                              CloseIconClicked="@(() => _inputBlockedMessage = null)">
-                        @_inputBlockedMessage
-                    </MudAlert>
+                    <div class="chat-message @(message.Role == "user" ? "user-message" : "assistant-message")">
+                        <MudPaper Elevation="1" Class="pa-3 chat-bubble">
+                            <MudText Typo="Typo.caption"
+                                     Class="mb-1"
+                                     Color="@(message.Role == "user" ? Color.Primary : Color.Default)">
+                                <strong>@(message.Role == "user" ? "You" : "MedGemma")</strong>
+                            </MudText>
+                            <MudText Style="white-space: pre-wrap;">@message.Content</MudText>
+                        </MudPaper>
+                    </div>
                 }
 
-                <!-- Task 5.3: Disable inputs during LLM calls -->
-                <MudTextField @bind-Value="_currentReply"
-                              Label="Your response"
-                              Variant="Variant.Outlined"
-                              FullWidth="true"
-                              Disabled="@_isLoading"
-                              OnKeyUp="HandleKeyUp"
-                              Class="mb-3" />
-                <div class="d-flex gap-2">
-                    <MudButton Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               OnClick="SendReply"
-                               Disabled="@(_isLoading || string.IsNullOrWhiteSpace(_currentReply))">
-                        Send
-                    </MudButton>
-                    <!-- Task 3.4: End Session button — disabled until first LLM response -->
-                    <MudButton Variant="Variant.Outlined"
-                               Color="Color.Warning"
-                               OnClick="EndSessionAsync"
-                               Disabled="@(_isLoading || !_firstResponseReceived)">
-                        End Session
-                    </MudButton>
+                @if (_isLoading)
+                {
+                    <!-- Task 5.6: Animated loading indicator in chat while LLM is processing -->
+                    <div class="chat-message assistant-message">
+                        <MudPaper Elevation="1" Class="pa-3 chat-bubble">
+                            <MudText Typo="Typo.caption" Class="mb-1">
+                                <strong>MedGemma</strong>
+                            </MudText>
+                            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-1" />
+                            <MudText Typo="Typo.caption" Color="Color.Default">Thinking...</MudText>
+                        </MudPaper>
+                    </div>
+                }
+            </div>
+
+            @if (_summary is not null)
+            {
+                <!-- Task 6.3: Summary in distinct MudAlert block -->
+                <MudAlert Severity="Severity.Info" Class="mb-4 mt-4">
+                    <MudText Typo="Typo.h6" Class="mb-2">Session Summary</MudText>
+                    <MudText Style="white-space: pre-wrap;">@_summary</MudText>
+                    <!-- Task 6.4: Copy to clipboard button -->
+                    <div class="mt-3">
+                        <MudButton Variant="Variant.Outlined"
+                                   StartIcon="@(_copied ? Icons.Material.Filled.Check : Icons.Material.Filled.ContentCopy)"
+                                   Color="@(_copied ? Color.Success : Color.Default)"
+                                   Size="Size.Small"
+                                   OnClick="CopySummary">
+                            @(_copied ? "Copied!" : "Copy to Clipboard")
+                        </MudButton>
+                    </div>
+                </MudAlert>
+            }
+
+            @if (!_sessionEnded)
+            {
+                <!-- Task 5.2: Reply input shown after intake form is dismissed -->
+                <MudPaper Elevation="2" Class="pa-4">
+                    @if (_inputBlockedMessage is not null)
+                    {
+                        <MudAlert Severity="Severity.Warning" Class="mb-3" Dense="true"
+                                  ShowCloseIcon="true"
+                                  CloseIconClicked="@(() => _inputBlockedMessage = null)">
+                            @_inputBlockedMessage
+                        </MudAlert>
+                    }
+
+                    <!-- Task 5.3: Disable inputs during LLM calls -->
+                    <MudTextField @bind-Value="_currentReply"
+                                  Label="Your response"
+                                  Variant="Variant.Outlined"
+                                  FullWidth="true"
+                                  Disabled="@_isLoading"
+                                  OnKeyUp="HandleKeyUp"
+                                  Class="mb-3" />
+                    <div class="d-flex gap-2">
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   OnClick="SendReply"
+                                   Disabled="@(_isLoading || string.IsNullOrWhiteSpace(_currentReply))">
+                            Send
+                        </MudButton>
+                        <!-- Task 3.4: End Session button — disabled until first LLM response -->
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Warning"
+                                   OnClick="EndSessionAsync"
+                                   Disabled="@(_isLoading || !_firstResponseReceived)">
+                            End Session
+                        </MudButton>
+                    </div>
+                </MudPaper>
+            }
+
+        </MudItem>
+
+        <!-- Right column: sidebar -->
+        <MudItem xs="12" md="4">
+            <MudPaper Elevation="2" Class="pa-0 sidebar-panel">
+
+                <!-- Task 5.2: Non-dismissible disclaimer, sticky at top -->
+                <div class="sidebar-disclaimer">
+                    <MudAlert Severity="Severity.Warning" Dense="true" Class="rounded-0">
+                        <MudText Typo="Typo.caption">
+                            <strong>Not a diagnosis.</strong> The conditions and symptoms listed here are generated
+                            by an AI model to demonstrate its capabilities only. They are not medical advice and
+                            should not be used for self-diagnosis. Always consult a qualified healthcare provider.
+                        </MudText>
+                    </MudAlert>
+                </div>
+
+                <div class="pa-3">
+
+                    @if (_sidebarLoading)
+                    {
+                        <!-- Task 5.5: Loading indicator while sidebar analysis runs -->
+                        <MudProgressLinear Color="Color.Secondary" Indeterminate="true" Class="mb-3" />
+                    }
+
+                    @if (_sidebarConditions.Count == 0 && _sidebarSymptoms.Count == 0 && !_sidebarLoading)
+                    {
+                        <!-- Task 5.6: Placeholder when nothing to show yet -->
+                        <MudText Typo="Typo.body2" Color="Color.Secondary" Class="text-center mt-4">
+                            Conditions and symptoms will appear here as the conversation progresses.
+                        </MudText>
+                    }
+
+                    @if (_sidebarConditions.Count > 0)
+                    {
+                        <!-- Task 5.3: Related Conditions section -->
+                        <MudText Typo="Typo.subtitle2" Class="mb-2 mt-1">Related Conditions</MudText>
+                        <MudList T="string" Dense="true">
+                            @foreach (var condition in _sidebarConditions)
+                            {
+                                <MudListItem T="string" Dense="true" Class="px-0">
+                                    @if (condition.Url is not null)
+                                    {
+                                        <a href="@condition.Url" target="_blank" rel="noopener noreferrer"
+                                           class="nhs-link">@condition.Name</a>
+                                    }
+                                    else
+                                    {
+                                        <MudText Typo="Typo.body2">@condition.Name</MudText>
+                                    }
+                                </MudListItem>
+                            }
+                        </MudList>
+                    }
+
+                    @if (_sidebarSymptoms.Count > 0)
+                    {
+                        <!-- Task 5.4: Related Symptoms section -->
+                        <MudText Typo="Typo.subtitle2" Class="mb-2 mt-3">Related Symptoms</MudText>
+                        <MudList T="string" Dense="true">
+                            @foreach (var symptom in _sidebarSymptoms)
+                            {
+                                <MudListItem T="string" Dense="true" Class="px-0">
+                                    @if (symptom.Url is not null)
+                                    {
+                                        <a href="@symptom.Url" target="_blank" rel="noopener noreferrer"
+                                           class="nhs-link">@symptom.Name</a>
+                                    }
+                                    else
+                                    {
+                                        <MudText Typo="Typo.body2">@symptom.Name</MudText>
+                                    }
+                                </MudListItem>
+                            }
+                        </MudList>
+                    }
+
                 </div>
             </MudPaper>
-        }
+        </MudItem>
 
-    </MudContainer>
+    </MudGrid>
 }
 
 @code {
@@ -217,6 +302,11 @@ else
     private readonly List<(string Role, string Content)> _messages = [];
     private ElementReference _chatContainer;
     private int _exchangeCount;
+
+    // Task 5.1: Sidebar state
+    private readonly List<Anamnesis.Domain.RelatedCondition> _sidebarConditions = [];
+    private readonly List<Anamnesis.Domain.RelatedCondition> _sidebarSymptoms = [];
+    private bool _sidebarLoading;
 
     private bool ValidateInput(string input)
     {
@@ -277,13 +367,17 @@ else
 
             // Task 5.5: Check continuation after rendering LLM question
             await PerformContinuationCheckAsync();
+
+            // Task 6.1: Fire sidebar analysis after input is re-enabled
+            if (!_sessionEnded)
+                _ = PerformSidebarCallAsync();
         }
         catch (OllamaUnavailableException)
         {
             // Task 7.1: Surface Ollama unavailable error, reset conversation
             _hasStarted = false;
             _messages.Clear();
-            _firstResponseReceived = false; 
+            _firstResponseReceived = false;
             _showOllamaError = true;
         }
         catch (Exception)
@@ -322,6 +416,10 @@ else
 
             // Task 5.5: Check if conversation should end automatically
             await PerformContinuationCheckAsync();
+
+            // Task 6.2: Fire sidebar analysis after input is re-enabled
+            if (!_sessionEnded)
+                _ = PerformSidebarCallAsync();
         }
         catch (OllamaUnavailableException)
         {
@@ -356,6 +454,55 @@ else
         catch
         {
             // Continuation check failure is non-fatal: session continues normally
+        }
+    }
+
+    // Tasks 6.1–6.4: Fire-and-forget sidebar analysis — non-blocking, failure-safe
+    private async Task PerformSidebarCallAsync()
+    {
+        if (_sessionEnded) return;
+
+        _sidebarLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            var result = await ConversationService.GetRelatedConditionsAsync();
+            MergeSidebarResults(result);
+        }
+        catch
+        {
+            // Sidebar failure is non-fatal
+        }
+        finally
+        {
+            _sidebarLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void MergeSidebarResults(Anamnesis.Domain.SidebarResult result)
+    {
+        foreach (var condition in result.Conditions)
+        {
+            var isDuplicate = condition.Url is not null
+                ? _sidebarConditions.Any(c => c.Url == condition.Url)
+                : _sidebarConditions.Any(c => c.Url is null &&
+                    string.Equals(c.Name, condition.Name, StringComparison.OrdinalIgnoreCase));
+
+            if (!isDuplicate)
+                _sidebarConditions.Add(condition);
+        }
+
+        foreach (var symptom in result.Symptoms)
+        {
+            var isDuplicate = symptom.Url is not null
+                ? _sidebarSymptoms.Any(s => s.Url == symptom.Url)
+                : _sidebarSymptoms.Any(s => s.Url is null &&
+                    string.Equals(s.Name, symptom.Name, StringComparison.OrdinalIgnoreCase));
+
+            if (!isDuplicate)
+                _sidebarSymptoms.Add(symptom);
         }
     }
 
