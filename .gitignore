@@ -55,3 +55,7 @@ nunit-*.xml
 
 # VS Code
 *.lscache
+
+# Local settings overrides — never commit
+appsettings.Local.json
+.claude/settings.local.json
