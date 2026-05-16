@@ -30,13 +30,22 @@ internal static class PromptTemplates
         """;
 
     public const string ContinuationCheckPrompt = """
-        Review the conversation so far. Have you gathered enough information about the reported symptoms to produce a useful summary for a healthcare provider?
+        Review the conversation so far. Assess how thoroughly you have explored the reported symptoms.
 
-        You have enough information if you have explored most of: onset, duration, severity, character, location, associated symptoms, and relevant context.
-        You do NOT need complete information on every dimension — a reasonable picture of the main symptoms is sufficient.
+        Respond END only if you have clear information on ALL of the following for the main symptom(s):
+        - Onset: when it started
+        - Duration: how long it has lasted
+        - Severity: a numeric rating or clear description
+        - Character: what it feels like (sharp, dull, aching, burning, etc.)
+        - Location: where exactly it occurs
+        - Associated symptoms: anything else the user has noticed
+        - Relieving or aggravating factors: what makes it better or worse
+
+        If ANY of these dimensions is unexplored, vague, or only partially addressed, respond CONTINUE.
+        When uncertain, always respond CONTINUE.
 
         Respond with ONLY one word:
-        - CONTINUE if asking one more question would meaningfully improve the summary
-        - END if you have enough for a useful summary
+        - CONTINUE if there is at least one dimension that has not been clearly established
+        - END only if all dimensions above have been clearly covered
         """;
 }
