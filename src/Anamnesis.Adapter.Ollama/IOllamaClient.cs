@@ -1,6 +1,6 @@
 using Anamnesis.Domain;
 
-namespace Anamnesis.Adapter.Ollama.Contract;
+namespace Anamnesis.Adapter.Ollama;
 
 public interface IOllamaClient
 {

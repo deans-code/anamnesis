@@ -35,7 +35,7 @@
 
             @if (_showOllamaError)
             {
-                <!-- Task 7.1: OllamaUnavailableException feedback -->
+                <!-- Task 7.1: LlmUnavailableException feedback -->
                 <MudAlert Severity="Severity.Error" Class="mb-4">
                     <strong>Ollama is not available.</strong> Please ensure Ollama is running by
                     executing <code>ollama serve</code> in your terminal, then try again.
@@ -372,7 +372,7 @@ else
             if (!_sessionEnded)
                 _ = PerformSidebarCallAsync();
         }
-        catch (OllamaUnavailableException)
+        catch (LlmUnavailableException)
         {
             // Task 7.1: Surface Ollama unavailable error, reset conversation
             _hasStarted = false;
@@ -421,7 +421,7 @@ else
             if (!_sessionEnded)
                 _ = PerformSidebarCallAsync();
         }
-        catch (OllamaUnavailableException)
+        catch (LlmUnavailableException)
         {
             _showOllamaError = true;
         }
@@ -524,7 +524,7 @@ else
         {
             _summary = await ConversationService.RequestSummaryAsync();
         }
-        catch (OllamaUnavailableException)
+        catch (LlmUnavailableException)
         {
             _showOllamaError = true;
         }

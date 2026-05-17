@@ -1,4 +1,5 @@
-using Anamnesis.Adapter.Ollama.Contract;
+using Anamnesis.Adapter.Llm.Contract;
+using Anamnesis.Adapter.Ollama;
 using Anamnesis.Domain;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;

@@ -1,7 +1,7 @@
 using Anamnesis.Adapter.MedicalData.Contract;
 using Anamnesis.Adapter.Nhs;
 using Anamnesis.Adapter.Ollama;
-using Anamnesis.Adapter.Ollama.Contract;
+using Anamnesis.Adapter.Llm.Contract;
 using Anamnesis.UseCase.Conversation;
 using Anamnesis.UseCase.Conversation.Contract;
 using Microsoft.Extensions.Configuration;

@@ -1,7 +1,8 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using Anamnesis.Adapter.Ollama.Contract;
+using Anamnesis.Adapter.Llm.Contract;
+using Anamnesis.Adapter.Ollama;
 using Anamnesis.Domain;
 using Microsoft.Extensions.Options;
 using Xunit;
@@ -61,23 +62,23 @@ public class OllamaClientTests
     }
 
     [Fact]
-    public async Task ChatAsync_ThrowsOllamaUnavailableException_OnHttpRequestException()
+    public async Task ChatAsync_ThrowsLlmUnavailableException_OnHttpRequestException()
     {
         var handler = new FailingHttpMessageHandler(new HttpRequestException("Connection refused"));
         var client = CreateClient(handler);
         var messages = new[] { new ConversationMessage("user", "test") };
 
-        await Assert.ThrowsAsync<OllamaUnavailableException>(() => client.ChatAsync(messages));
+        await Assert.ThrowsAsync<LlmUnavailableException>(() => client.ChatAsync(messages));
     }
 
     [Fact]
-    public async Task ChatAsync_ThrowsOllamaUnavailableException_OnTimeout()
+    public async Task ChatAsync_ThrowsLlmUnavailableException_OnTimeout()
     {
         var handler = new FailingHttpMessageHandler(new TaskCanceledException("Timeout"));
         var client = CreateClient(handler);
         var messages = new[] { new ConversationMessage("user", "test") };
 
-        await Assert.ThrowsAsync<OllamaUnavailableException>(() => client.ChatAsync(messages));
+        await Assert.ThrowsAsync<LlmUnavailableException>(() => client.ChatAsync(messages));
     }
 
     [Fact]

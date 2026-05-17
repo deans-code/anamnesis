@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Anamnesis.Adapter.Ollama.Contract;
+using Anamnesis.Adapter.Llm.Contract;
 using Anamnesis.Domain;
 using Anamnesis.UseCase.Conversation.Contract;
 
@@ -33,7 +33,7 @@ public class OllamaConversationEngine : IConversationEngine
             _history.RemoveAt(_history.Count - 1);
             return "You have sent too many messages in a short period. Please wait a moment before trying again.";
         }
-        catch (OllamaUnavailableException)
+        catch (LlmUnavailableException)
         {
             _history.RemoveAt(_history.Count - 1);
             throw;

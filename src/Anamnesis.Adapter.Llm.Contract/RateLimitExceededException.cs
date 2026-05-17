@@ -1,4 +1,4 @@
-namespace Anamnesis.Adapter.Ollama.Contract;
+namespace Anamnesis.Adapter.Llm.Contract;
 
 public class RateLimitExceededException : Exception
 {

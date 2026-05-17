@@ -17,8 +17,8 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.8" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Anamnesis.Adapter.Llm.Contract\Anamnesis.Adapter.Llm.Contract.csproj" />
     <ProjectReference Include="..\Anamnesis.Domain\Anamnesis.Domain.csproj" />
-    <ProjectReference Include="..\Anamnesis.Adapter.Ollama.Contract\Anamnesis.Adapter.Ollama.Contract.csproj" />
     <ProjectReference Include="..\Anamnesis.Adapter.Ollama\Anamnesis.Adapter.Ollama.csproj" />
   </ItemGroup>
 </Project>

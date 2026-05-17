@@ -1,5 +1,5 @@
 using System.Net.Http.Json;
-using Anamnesis.Adapter.Ollama.Contract;
+using Anamnesis.Adapter.Llm.Contract;
 using Anamnesis.Domain;
 using Microsoft.Extensions.Options;
 
@@ -52,12 +52,12 @@ public class OllamaClient : IOllamaClient
         }
         catch (HttpRequestException ex)
         {
-            throw new OllamaUnavailableException(
+            throw new LlmUnavailableException(
                 "Unable to connect to Ollama. Please ensure Ollama is running with 'ollama serve'.", ex);
         }
         catch (TaskCanceledException ex) when (!ex.CancellationToken.IsCancellationRequested)
         {
-            throw new OllamaUnavailableException(
+            throw new LlmUnavailableException(
                 "Connection to Ollama timed out. Please ensure Ollama is running and responsive.", ex);
         }
     }
