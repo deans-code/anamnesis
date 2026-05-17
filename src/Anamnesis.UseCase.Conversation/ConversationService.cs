@@ -1,3 +1,4 @@
+using Anamnesis.Adapter.MedicalData.Contract;
 using Anamnesis.Domain;
 using Anamnesis.UseCase.Conversation.Contract;
 
@@ -7,15 +8,15 @@ public class ConversationService : IConversationService
 {
     private readonly IConversationEngine _engine;
     private readonly IAuditLogger _auditLogger;
-    private readonly INhsIndexService _nhsIndexService;
+    private readonly IMedicalReferenceService _medicalReferenceService;
     private bool _hasStarted;
     private readonly string _sessionId = Guid.NewGuid().ToString("N");
 
-    public ConversationService(IConversationEngine engine, IAuditLogger auditLogger, INhsIndexService nhsIndexService)
+    public ConversationService(IConversationEngine engine, IAuditLogger auditLogger, IMedicalReferenceService medicalReferenceService)
     {
         _engine = engine;
         _auditLogger = auditLogger;
-        _nhsIndexService = nhsIndexService;
+        _medicalReferenceService = medicalReferenceService;
 
         _ = _auditLogger.LogAsync(new AuditEntry(
             Timestamp: DateTimeOffset.UtcNow,
@@ -89,16 +90,8 @@ public class ConversationService : IConversationService
     {
         try
         {
-            var conditionNames = await _nhsIndexService.GetNamesAsync(NhsIndexType.Conditions);
-            var symptomNames = await _nhsIndexService.GetNamesAsync(NhsIndexType.Symptoms);
-
-            var conditions = conditionNames
-                .Select(n => new RelatedCondition(n, _nhsIndexService.GetUrl(n, NhsIndexType.Conditions)))
-                .ToList();
-            var symptoms = symptomNames
-                .Select(n => new RelatedCondition(n, _nhsIndexService.GetUrl(n, NhsIndexType.Symptoms)))
-                .ToList();
-
+            var conditions = await _medicalReferenceService.GetConditionsAsync();
+            var symptoms = await _medicalReferenceService.GetSymptomsAsync();
             return await _engine.GetRelatedConditionsAsync(conditions, symptoms);
         }
         catch

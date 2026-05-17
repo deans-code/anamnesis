@@ -10,9 +10,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Anamnesis.Domain\Anamnesis.Domain.csproj" />
-    <ProjectReference Include="..\Anamnesis.Adapter.Ollama.Contract\Anamnesis.Adapter.Ollama.Contract.csproj" />
-    <ProjectReference Include="..\Anamnesis.Adapter.Ollama\Anamnesis.Adapter.Ollama.csproj" />
+    <ProjectReference Include="..\Anamnesis.Infrastructure\Anamnesis.Infrastructure.csproj" />
     <ProjectReference Include="..\Anamnesis.UseCase.Conversation.Contract\Anamnesis.UseCase.Conversation.Contract.csproj" />
-    <ProjectReference Include="..\Anamnesis.UseCase.Conversation\Anamnesis.UseCase.Conversation.csproj" />
   </ItemGroup>
 </Project>

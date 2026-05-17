@@ -1,3 +1,4 @@
+using Anamnesis.Adapter.MedicalData.Contract;
 using Anamnesis.Domain;
 using Anamnesis.UseCase.Conversation.Contract;
 using NSubstitute;
@@ -10,13 +11,13 @@ public class ConversationServiceTests
 {
     private readonly IConversationEngine _engine = Substitute.For<IConversationEngine>();
     private readonly IAuditLogger _auditLogger = Substitute.For<IAuditLogger>();
-    private readonly INhsIndexService _nhsIndexService = Substitute.For<INhsIndexService>();
+    private readonly IMedicalReferenceService _medicalReferenceService = Substitute.For<IMedicalReferenceService>();
     private readonly IConversationService _sut;
 
     public ConversationServiceTests()
     {
         _auditLogger.LogAsync(Arg.Any<AuditEntry>()).Returns(Task.CompletedTask);
-        _sut = new ConversationService(_engine, _auditLogger, _nhsIndexService);
+        _sut = new ConversationService(_engine, _auditLogger, _medicalReferenceService);
     }
 
     [Fact]
@@ -108,18 +109,17 @@ public class ConversationServiceTests
     }
 
     [Fact]
-    public async Task GetRelatedConditionsAsync_PassesResolvedNhsEntriesToEngine()
+    public async Task GetRelatedConditionsAsync_PassesReferenceEntriesToEngine()
     {
-        _nhsIndexService.GetNamesAsync(NhsIndexType.Conditions)
-            .Returns(new List<string> { "Asthma" }.AsReadOnly() as IReadOnlyList<string>);
-        _nhsIndexService.GetNamesAsync(NhsIndexType.Symptoms)
-            .Returns(new List<string> { "Chest pain" }.AsReadOnly() as IReadOnlyList<string>);
-        _nhsIndexService.GetUrl("Asthma", NhsIndexType.Conditions).Returns("/conditions/asthma/");
-        _nhsIndexService.GetUrl("Chest pain", NhsIndexType.Symptoms).Returns("/symptoms/chest-pain/");
+        var conditions = new List<RelatedCondition> { new("Asthma", "/conditions/asthma/") };
+        var symptoms = new List<RelatedCondition> { new("Chest pain", "/symptoms/chest-pain/") };
 
-        var expected = new SidebarResult(
-            [new RelatedCondition("Asthma", "/conditions/asthma/")],
-            [new RelatedCondition("Chest pain", "/symptoms/chest-pain/")]);
+        _medicalReferenceService.GetConditionsAsync()
+            .Returns(conditions as IReadOnlyList<RelatedCondition>);
+        _medicalReferenceService.GetSymptomsAsync()
+            .Returns(symptoms as IReadOnlyList<RelatedCondition>);
+
+        var expected = new SidebarResult(conditions, symptoms);
         _engine.GetRelatedConditionsAsync(Arg.Any<IReadOnlyList<RelatedCondition>>(), Arg.Any<IReadOnlyList<RelatedCondition>>())
             .Returns(expected);
 
@@ -134,8 +134,10 @@ public class ConversationServiceTests
     [Fact]
     public async Task GetRelatedConditionsAsync_ReturnsEmptyResult_WhenEngineFails()
     {
-        _nhsIndexService.GetNamesAsync(Arg.Any<NhsIndexType>())
-            .Returns(new List<string>().AsReadOnly() as IReadOnlyList<string>);
+        _medicalReferenceService.GetConditionsAsync()
+            .Returns(new List<RelatedCondition>() as IReadOnlyList<RelatedCondition>);
+        _medicalReferenceService.GetSymptomsAsync()
+            .Returns(new List<RelatedCondition>() as IReadOnlyList<RelatedCondition>);
         _engine.GetRelatedConditionsAsync(Arg.Any<IReadOnlyList<RelatedCondition>>(), Arg.Any<IReadOnlyList<RelatedCondition>>())
             .Throws(new Exception("engine error"));
 
