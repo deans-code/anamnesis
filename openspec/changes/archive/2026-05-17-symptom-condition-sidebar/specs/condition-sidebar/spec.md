@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: Sidebar displays potentially related conditions and symptoms
-The system SHALL render a sidebar panel alongside the chat interface once the conversation has started. After each assistant response, the system SHALL make a background LLM call that analyses the conversation history and returns a structured list of potentially related medical conditions and symptoms, each with a primary name and a list of synonyms. The sidebar SHALL display each result as a labelled entry, linked to the relevant NHS page when a match is found. The sidebar SHALL accumulate results across turns, deduplicating by resolved NHS URL for matched entries and by primary name for unmatched entries, so that the same condition is not listed twice.
+The system SHALL render a sidebar panel alongside the chat interface once the conversation has started. After each assistant response, the system SHALL make a background LLM call that analyses the conversation history and returns a list of exact condition and symptom names selected from the NHS index. The sidebar SHALL display each result as a link to the relevant NHS page. The sidebar SHALL accumulate results across turns, deduplicating by exact name, so that the same condition is not listed twice.
 
 #### Scenario: Sidebar populates after first assistant response
 - **WHEN** the assistant has responded to the user's initial symptom description
@@ -23,8 +23,8 @@ The system SHALL render a sidebar panel alongside the chat interface once the co
 - **WHEN** the sidebar analysis call throws an exception
 - **THEN** the system SHALL silently suppress the error; the sidebar retains its previous content and the main conversation continues unaffected
 
-### Requirement: System fetches and caches NHS index pages on startup
-The system SHALL fetch the NHS conditions index page (`https://www.nhs.uk/health-a-to-z/conditions/`) and the NHS symptoms index page (`https://www.nhs.uk/symptoms/`) on first use and cache the parsed `(name, url)` entries in memory for the application lifetime. If either page cannot be fetched or parsed, the system SHALL log a warning and continue with an empty cache for that index; no exception SHALL be surfaced to the user.
+### Requirement: System fetches and caches NHS index pages on first use
+The system SHALL fetch the NHS conditions index page (`https://www.nhs.uk/health-a-to-z/conditions/`) and the NHS symptoms index page (`https://www.nhs.uk/symptoms/`) on first use and cache the parsed `(name, url)` entries in memory for the application lifetime. The cached name lists SHALL be injected into each sidebar analysis prompt so the LLM selects only from NHS-listed items. If either page cannot be fetched or parsed, the system SHALL log a warning and continue with an empty cache for that index; no exception SHALL be surfaced to the user.
 
 #### Scenario: NHS index pages are successfully fetched and cached
 - **WHEN** the application makes its first sidebar analysis call
@@ -32,25 +32,21 @@ The system SHALL fetch the NHS conditions index page (`https://www.nhs.uk/health
 
 #### Scenario: NHS index page is unavailable at fetch time
 - **WHEN** an NHS index page cannot be reached or returns an error response
-- **THEN** the system SHALL log a warning, cache an empty index for that page, and continue; the sidebar SHALL display entries as plain text rather than links
+- **THEN** the system SHALL log a warning, cache an empty index for that page, and continue; the sidebar SHALL show no entries for that index type
 
-### Requirement: System resolves NHS URLs by matching names and synonyms against the cached index
-For each condition or symptom returned by the LLM, the system SHALL attempt to resolve a verified NHS URL by comparing the primary name and each synonym against the cached NHS index using case-insensitive string matching. The first matching index entry SHALL be used as the NHS URL for that result. If no match is found, the entry SHALL be displayed as plain text without a link.
+### Requirement: NHS name lists are injected into each sidebar analysis prompt
+The system SHALL include the full list of cached condition names and symptom names in the sidebar analysis prompt. The LLM SHALL be instructed to return only exact names from those lists. The application SHALL resolve each returned name to its NHS URL via direct lookup against the cached index.
 
-#### Scenario: Primary name matches an NHS index entry
-- **WHEN** the LLM returns a condition whose primary name matches an entry in the cached NHS conditions index (case-insensitive)
-- **THEN** the sidebar SHALL render that entry as a link to the matched NHS URL
+#### Scenario: LLM returns exact names from the injected list
+- **WHEN** the sidebar analysis call completes and the LLM returns names that exist in the cached index
+- **THEN** the system SHALL resolve each name to its NHS URL via direct lookup and render each entry as a link
 
-#### Scenario: Synonym matches an NHS index entry
-- **WHEN** the LLM returns a condition whose primary name does not match but one of its synonyms matches an entry in the cached NHS conditions index (case-insensitive)
-- **THEN** the sidebar SHALL render that entry as a link to the matched NHS URL, using the primary name as the link text
+#### Scenario: LLM returns a name not present in the cached index
+- **WHEN** the LLM returns a name that cannot be found in the cached index
+- **THEN** the system SHALL silently drop that entry; it SHALL NOT be displayed in the sidebar
 
-#### Scenario: No name or synonym matches the NHS index
-- **WHEN** neither the primary name nor any synonym of a returned condition or symptom matches any entry in the cached NHS index
-- **THEN** the sidebar SHALL display the primary name as plain text without a hyperlink
-
-### Requirement: Each matched sidebar entry links to the relevant NHS page
-The system SHALL render each condition or symptom entry that has a resolved NHS URL as a hyperlink. Links SHALL open in a new browser tab. The link text SHALL be the human-readable primary name returned by the LLM.
+### Requirement: Each sidebar entry links to the relevant NHS page
+The system SHALL render each condition or symptom entry as a hyperlink to its resolved NHS URL. Links SHALL open in a new browser tab. The link text SHALL be the name as returned by the LLM.
 
 #### Scenario: Matched condition entry links to NHS conditions page
 - **WHEN** a condition entry has been matched to an NHS URL under `https://www.nhs.uk/conditions/`

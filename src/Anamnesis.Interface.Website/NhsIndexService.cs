@@ -29,20 +29,17 @@ public class NhsIndexService : INhsIndexService
         _logger = logger;
     }
 
-    public async Task<string?> ResolveUrlAsync(string name, IEnumerable<string> synonyms, NhsIndexType indexType)
+    public async Task<IReadOnlyList<string>> GetNamesAsync(NhsIndexType indexType)
     {
         var index = await GetIndexAsync(indexType);
+        return [.. index.Keys];
+    }
 
-        if (index.TryGetValue(name.Trim(), out var url))
-            return url;
-
-        foreach (var synonym in synonyms)
-        {
-            if (index.TryGetValue(synonym.Trim(), out url))
-                return url;
-        }
-
-        return null;
+    public string? GetUrl(string exactName, NhsIndexType indexType)
+    {
+        if (!_cache.TryGetValue(indexType, out var index))
+            return null;
+        return index.TryGetValue(exactName.Trim(), out var url) ? url : null;
     }
 
     private async Task<Dictionary<string, string>> GetIndexAsync(NhsIndexType indexType)

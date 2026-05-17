@@ -123,15 +123,18 @@ public class ConversationService : IConversationService
 
     public async Task<SidebarResult> GetRelatedConditionsAsync()
     {
-        var messages = new List<ConversationMessage>(_history)
-        {
-            new ConversationMessage("user", PromptTemplates.SidebarPrompt)
-        };
-
         try
         {
+            var conditionNames = await _nhsIndexService.GetNamesAsync(NhsIndexType.Conditions);
+            var symptomNames = await _nhsIndexService.GetNamesAsync(NhsIndexType.Symptoms);
+
+            var messages = new List<ConversationMessage>(_history)
+            {
+                new ConversationMessage("user", PromptTemplates.BuildSidebarPrompt(conditionNames, symptomNames))
+            };
+
             var response = await _ollamaClient.ChatAsync(messages);
-            return await ParseSidebarResponseAsync(response);
+            return ParseSidebarResponse(response);
         }
         catch
         {
@@ -139,7 +142,7 @@ public class ConversationService : IConversationService
         }
     }
 
-    private async Task<SidebarResult> ParseSidebarResponseAsync(string response)
+    private SidebarResult ParseSidebarResponse(string response)
     {
         try
         {
@@ -152,8 +155,8 @@ public class ConversationService : IConversationService
             using var doc = JsonDocument.Parse(json);
             var root = doc.RootElement;
 
-            var conditions = await ResolveEntriesAsync(root, "conditions", NhsIndexType.Conditions);
-            var symptoms = await ResolveEntriesAsync(root, "symptoms", NhsIndexType.Symptoms);
+            var conditions = ResolveEntries(root, "conditions", NhsIndexType.Conditions);
+            var symptoms = ResolveEntries(root, "symptoms", NhsIndexType.Symptoms);
 
             return new SidebarResult(conditions, symptoms);
         }
@@ -163,7 +166,7 @@ public class ConversationService : IConversationService
         }
     }
 
-    private async Task<IReadOnlyList<RelatedCondition>> ResolveEntriesAsync(
+    private IReadOnlyList<RelatedCondition> ResolveEntries(
         JsonElement root, string arrayProperty, NhsIndexType indexType)
     {
         if (!root.TryGetProperty(arrayProperty, out var array) || array.ValueKind != JsonValueKind.Array)
@@ -172,21 +175,12 @@ public class ConversationService : IConversationService
         var results = new List<RelatedCondition>();
         foreach (var item in array.EnumerateArray())
         {
-            var name = item.TryGetProperty("name", out var nameProp) ? nameProp.GetString() ?? string.Empty : string.Empty;
+            var name = item.GetString();
             if (string.IsNullOrWhiteSpace(name)) continue;
 
-            var synonyms = new List<string>();
-            if (item.TryGetProperty("synonyms", out var synProp) && synProp.ValueKind == JsonValueKind.Array)
-            {
-                foreach (var s in synProp.EnumerateArray())
-                {
-                    var sv = s.GetString();
-                    if (!string.IsNullOrWhiteSpace(sv)) synonyms.Add(sv);
-                }
-            }
-
-            var url = await _nhsIndexService.ResolveUrlAsync(name, synonyms, indexType);
-            results.Add(new RelatedCondition(name, synonyms, url));
+            var url = _nhsIndexService.GetUrl(name, indexType);
+            if (url is not null)
+                results.Add(new RelatedCondition(name, url));
         }
 
         return results;

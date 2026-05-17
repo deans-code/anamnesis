@@ -485,23 +485,13 @@ else
     {
         foreach (var condition in result.Conditions)
         {
-            var isDuplicate = condition.Url is not null
-                ? _sidebarConditions.Any(c => c.Url == condition.Url)
-                : _sidebarConditions.Any(c => c.Url is null &&
-                    string.Equals(c.Name, condition.Name, StringComparison.OrdinalIgnoreCase));
-
-            if (!isDuplicate)
+            if (!_sidebarConditions.Any(c => string.Equals(c.Name, condition.Name, StringComparison.OrdinalIgnoreCase)))
                 _sidebarConditions.Add(condition);
         }
 
         foreach (var symptom in result.Symptoms)
         {
-            var isDuplicate = symptom.Url is not null
-                ? _sidebarSymptoms.Any(s => s.Url == symptom.Url)
-                : _sidebarSymptoms.Any(s => s.Url is null &&
-                    string.Equals(s.Name, symptom.Name, StringComparison.OrdinalIgnoreCase));
-
-            if (!isDuplicate)
+            if (!_sidebarSymptoms.Any(s => string.Equals(s.Name, symptom.Name, StringComparison.OrdinalIgnoreCase)))
                 _sidebarSymptoms.Add(symptom);
         }
     }

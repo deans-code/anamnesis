@@ -2,5 +2,6 @@ namespace Anamnesis.UseCase.Conversation.Contract;
 
 public interface INhsIndexService
 {
-    Task<string?> ResolveUrlAsync(string name, IEnumerable<string> synonyms, NhsIndexType indexType);
+    Task<IReadOnlyList<string>> GetNamesAsync(NhsIndexType indexType);
+    string? GetUrl(string exactName, NhsIndexType indexType);
 }
