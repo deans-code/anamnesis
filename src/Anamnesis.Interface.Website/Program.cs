@@ -68,6 +68,8 @@ builder.Services.AddSingleton<INhsIndexService>(sp =>
 });
 
 builder.Services.AddScoped<IAuditLogger, FileAuditLogger>();
+// Scoped lifetime matches ConversationService — one engine per Blazor circuit session
+builder.Services.AddScoped<IConversationEngine, OllamaConversationEngine>();
 builder.Services.AddScoped<IConversationService, ConversationService>();
 
 var app = builder.Build();

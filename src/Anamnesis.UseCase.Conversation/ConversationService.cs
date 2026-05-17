@@ -1,5 +1,3 @@
-using System.Text.Json;
-using Anamnesis.Adapter.Ollama.Contract;
 using Anamnesis.Domain;
 using Anamnesis.UseCase.Conversation.Contract;
 
@@ -7,16 +5,15 @@ namespace Anamnesis.UseCase.Conversation;
 
 public class ConversationService : IConversationService
 {
-    private readonly IOllamaClient _ollamaClient;
+    private readonly IConversationEngine _engine;
     private readonly IAuditLogger _auditLogger;
     private readonly INhsIndexService _nhsIndexService;
-    private readonly List<ConversationMessage> _history = [];
-    private bool _systemPromptAdded;
+    private bool _hasStarted;
     private readonly string _sessionId = Guid.NewGuid().ToString("N");
 
-    public ConversationService(IOllamaClient ollamaClient, IAuditLogger auditLogger, INhsIndexService nhsIndexService)
+    public ConversationService(IConversationEngine engine, IAuditLogger auditLogger, INhsIndexService nhsIndexService)
     {
-        _ollamaClient = ollamaClient;
+        _engine = engine;
         _auditLogger = auditLogger;
         _nhsIndexService = nhsIndexService;
 
@@ -27,7 +24,7 @@ public class ConversationService : IConversationService
             Detail: string.Empty));
     }
 
-    public bool HasStarted => _history.Count > 0;
+    public bool HasStarted => _hasStarted;
 
     public async Task<string> SendAsync(string userMessage)
     {
@@ -49,49 +46,21 @@ public class ConversationService : IConversationService
             EventType: "user_message",
             Detail: userMessage));
 
-        if (!_systemPromptAdded)
-        {
-            _history.Insert(0, new ConversationMessage("system", PromptTemplates.MedGemmaSystemPrompt));
-            _systemPromptAdded = true;
-        }
+        var response = await _engine.SendMessageAsync(userMessage);
+        _hasStarted = true;
 
-        _history.Add(new ConversationMessage("user", userMessage));
+        await _auditLogger.LogAsync(new AuditEntry(
+            Timestamp: DateTimeOffset.UtcNow,
+            SessionId: _sessionId,
+            EventType: "llm_response",
+            Detail: response));
 
-        try
-        {
-            var response = await _ollamaClient.ChatAsync(_history);
-            _history.Add(new ConversationMessage("assistant", response));
-
-            await _auditLogger.LogAsync(new AuditEntry(
-                Timestamp: DateTimeOffset.UtcNow,
-                SessionId: _sessionId,
-                EventType: "llm_response",
-                Detail: response));
-
-            return response;
-        }
-        catch (RateLimitExceededException)
-        {
-            _history.RemoveAt(_history.Count - 1);
-            return "You have sent too many messages in a short period. Please wait a moment before trying again.";
-        }
-        catch (OllamaUnavailableException)
-        {
-            _history.RemoveAt(_history.Count - 1);
-            throw;
-        }
+        return response;
     }
 
     public async Task<bool> CheckContinuationAsync()
     {
-        var checkMessages = new List<ConversationMessage>(_history)
-        {
-            new ConversationMessage("user", PromptTemplates.ContinuationCheckPrompt)
-        };
-
-        var response = await _ollamaClient.ChatAsync(checkMessages);
-        var trimmed = response.Trim();
-        var shouldContinue = !string.Equals(trimmed, "END", StringComparison.OrdinalIgnoreCase);
+        var shouldContinue = await _engine.CheckShouldContinueAsync();
 
         if (!shouldContinue)
         {
@@ -113,12 +82,7 @@ public class ConversationService : IConversationService
             EventType: "session_end",
             Detail: "User requested summary"));
 
-        var summaryMessages = new List<ConversationMessage>(_history)
-        {
-            new ConversationMessage("user", PromptTemplates.SummaryPrompt)
-        };
-
-        return await _ollamaClient.ChatAsync(summaryMessages);
+        return await _engine.SummariseAsync();
     }
 
     public async Task<SidebarResult> GetRelatedConditionsAsync()
@@ -128,62 +92,18 @@ public class ConversationService : IConversationService
             var conditionNames = await _nhsIndexService.GetNamesAsync(NhsIndexType.Conditions);
             var symptomNames = await _nhsIndexService.GetNamesAsync(NhsIndexType.Symptoms);
 
-            var messages = new List<ConversationMessage>(_history)
-            {
-                new ConversationMessage("user", PromptTemplates.BuildSidebarPrompt(conditionNames, symptomNames))
-            };
+            var conditions = conditionNames
+                .Select(n => new RelatedCondition(n, _nhsIndexService.GetUrl(n, NhsIndexType.Conditions)))
+                .ToList();
+            var symptoms = symptomNames
+                .Select(n => new RelatedCondition(n, _nhsIndexService.GetUrl(n, NhsIndexType.Symptoms)))
+                .ToList();
 
-            var response = await _ollamaClient.ChatAsync(messages);
-            return ParseSidebarResponse(response);
+            return await _engine.GetRelatedConditionsAsync(conditions, symptoms);
         }
         catch
         {
             return new SidebarResult([], []);
         }
-    }
-
-    private SidebarResult ParseSidebarResponse(string response)
-    {
-        try
-        {
-            var jsonStart = response.IndexOf('{');
-            var jsonEnd = response.LastIndexOf('}');
-            if (jsonStart < 0 || jsonEnd <= jsonStart)
-                return new SidebarResult([], []);
-
-            var json = response[jsonStart..(jsonEnd + 1)];
-            using var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
-
-            var conditions = ResolveEntries(root, "conditions", NhsIndexType.Conditions);
-            var symptoms = ResolveEntries(root, "symptoms", NhsIndexType.Symptoms);
-
-            return new SidebarResult(conditions, symptoms);
-        }
-        catch
-        {
-            return new SidebarResult([], []);
-        }
-    }
-
-    private IReadOnlyList<RelatedCondition> ResolveEntries(
-        JsonElement root, string arrayProperty, NhsIndexType indexType)
-    {
-        if (!root.TryGetProperty(arrayProperty, out var array) || array.ValueKind != JsonValueKind.Array)
-            return [];
-
-        var results = new List<RelatedCondition>();
-        foreach (var item in array.EnumerateArray())
-        {
-            var name = item.GetString();
-            if (string.IsNullOrWhiteSpace(name)) continue;
-
-            var url = _nhsIndexService.GetUrl(name, indexType);
-            if (url is not null)
-                results.Add(new RelatedCondition(name, url));
-        }
-
-        return results;
     }
 }
-

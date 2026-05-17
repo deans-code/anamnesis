@@ -1,4 +1,4 @@
-namespace Anamnesis.UseCase.Conversation;
+namespace Anamnesis.Adapter.Ollama;
 
 internal static class PromptTemplates
 {
@@ -29,7 +29,7 @@ internal static class PromptTemplates
         This summary is for the user to share with their healthcare provider. Provide the summary only — no questions, no follow-ups.
         """;
 
-    public static string BuildSidebarPrompt(IReadOnlyList<string> conditionNames, IReadOnlyList<string> symptomNames)
+    public static string BuildSidebarPrompt(IEnumerable<string> conditionNames, IEnumerable<string> symptomNames)
     {
         var conditions = string.Join(", ", conditionNames);
         var symptoms = string.Join(", ", symptomNames);
