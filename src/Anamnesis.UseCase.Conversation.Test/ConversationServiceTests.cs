@@ -10,12 +10,13 @@ public class ConversationServiceTests
 {
     private readonly IOllamaClient _ollamaClient = Substitute.For<IOllamaClient>();
     private readonly IAuditLogger _auditLogger = Substitute.For<IAuditLogger>();
+    private readonly INhsIndexService _nhsIndexService = Substitute.For<INhsIndexService>();
     private readonly IConversationService _sut;
 
     public ConversationServiceTests()
     {
         _auditLogger.LogAsync(Arg.Any<AuditEntry>()).Returns(Task.CompletedTask);
-        _sut = new ConversationService(_ollamaClient, _auditLogger);
+        _sut = new ConversationService(_ollamaClient, _auditLogger, _nhsIndexService);
     }
 
     [Fact]
