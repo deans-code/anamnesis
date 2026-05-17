@@ -25,6 +25,7 @@ The application is a simple web based chat interface which helps a user explore 
  - [ ] Check structure of code created by OpenSpec + Claude Sonnet 4.6 so far.
  - [ ] Use OpenSpec to reinforce architectural decisions.
  - [ ] Create ArchUnit tests to help OpenSpec adhere to structure.
+ - [ ] Rename projects for better grouping, check namespaces after rename.
 
 ## :telescope: Future Gazing
 
