@@ -13,7 +13,7 @@ The .NET Core backend SHALL send chat requests to the Ollama API at `http://loca
 
 #### Scenario: Circuit breaker is open
 - **WHEN** the backend attempts to call Ollama and the circuit breaker is open
-- **THEN** the backend SHALL immediately return an `OllamaUnavailableException` without making a network call, and the UI SHALL display the service unavailable message
+- **THEN** the backend SHALL immediately return an `LlmUnavailableException` without making a network call, and the UI SHALL display the service unavailable message
 
 ### Requirement: Ollama endpoint and model are configured via application settings
 The backend SHALL read both the Ollama base URL and model name from `appsettings.json` (`OllamaSettings:BaseUrl` and `OllamaSettings:Model`). The model name SHALL always be loaded from configuration and SHALL NOT be hardcoded. At application startup, `OllamaSettings` SHALL be validated: the configured model name MUST start with `medgemma` (case-insensitive); if it does not, the application SHALL fail to start with a descriptive `InvalidOperationException`. The base URL and model name SHALL NOT be changeable at runtime via the UI.
