@@ -22,6 +22,9 @@ The application is a simple web based chat interface which helps a user explore 
  - [x] Collect patient information.
  - [x] Propose questions to ask the patient.
  - [ ] Define effective method of reviewing OWASP remediation implementation (manual, partially automated, fully automated?).
+ - [ ] Check structure of code created by OpenSpec + Claude Sonnet 4.6 so far.
+ - [ ] Use OpenSpec to reinforce architectural decisions.
+ - [ ] Create ArchUnit tests to help OpenSpec adhere to structure.
 
 ## :telescope: Future Gazing
 
