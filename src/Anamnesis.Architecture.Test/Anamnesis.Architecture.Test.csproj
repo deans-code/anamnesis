@@ -25,5 +25,7 @@
     <ProjectReference Include="..\Anamnesis.Adapter.MedicalData.Nhs\Anamnesis.Adapter.MedicalData.Nhs.csproj" />
     <ProjectReference Include="..\Anamnesis.Infrastructure\Anamnesis.Infrastructure.csproj" />
     <ProjectReference Include="..\Anamnesis.Interface.Website\Anamnesis.Interface.Website.csproj" />
+    <ProjectReference Include="..\Anamnesis.Adapter.MedicalData.Nhs.Test\Anamnesis.Adapter.MedicalData.Nhs.Test.csproj" />
+    <ProjectReference Include="..\Anamnesis.Adapter.Llm.Ollama.Test\Anamnesis.Adapter.Llm.Ollama.Test.csproj" />
   </ItemGroup>
 </Project>

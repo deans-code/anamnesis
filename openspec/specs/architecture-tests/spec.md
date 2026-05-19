@@ -126,3 +126,12 @@ Every type in each production assembly SHALL reside in a namespace that starts w
 #### Scenario: Root namespace matches assembly name
 - **WHEN** the architecture tests are run
 - **THEN** no type in any `Anamnesis.*` production assembly has a namespace that does not start with the assembly's name
+
+---
+
+### Requirement: Adapter structural completeness is enforced
+The architecture test suite SHALL verify that each adapter domain concept has a complete project trio: contract, implementation, and implementation test.
+
+#### Scenario: Architecture tests enforce the adapter trio rule
+- **WHEN** the architecture tests are run
+- **THEN** the test suite asserts that for every adapter domain concept with a contract assembly, at least one implementation assembly exists, and for every implementation assembly a matching test assembly exists
