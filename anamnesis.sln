@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anamnesis.Infrastructure", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anamnesis.Adapter.Llm.Contract", "src\Anamnesis.Adapter.Llm.Contract\Anamnesis.Adapter.Llm.Contract.csproj", "{61BBD9F4-2338-4BD1-9EB3-1AE36C005DBF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anamnesis.Architecture.Test", "src\Anamnesis.Architecture.Test\Anamnesis.Architecture.Test.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF0123456789}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
