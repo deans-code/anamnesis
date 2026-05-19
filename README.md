@@ -39,7 +39,7 @@ No known defects.
 
 ### AI-assisted development
 
-[GitHub Copilot](https://github.com/features/copilot) was used to assist in the development of this software.
+[GitHub Copilot](https://github.com/features/copilot) and [Claude Code](https://claude.com/product/claude-code) were used to assist in the development of this software.
 
 ### Spec-driven development with OpenSpec
 
