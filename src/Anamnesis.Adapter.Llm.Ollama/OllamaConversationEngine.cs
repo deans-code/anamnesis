@@ -3,7 +3,7 @@ using Anamnesis.Adapter.Llm.Contract;
 using Anamnesis.Domain;
 using Anamnesis.UseCase.Conversation.Contract;
 
-namespace Anamnesis.Adapter.Ollama;
+namespace Anamnesis.Adapter.Llm.Ollama;
 
 public class OllamaConversationEngine : IConversationEngine
 {

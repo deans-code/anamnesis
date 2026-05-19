@@ -3,7 +3,7 @@ using Anamnesis.Domain;
 using Anamnesis.Adapter.MedicalData.Contract;
 using Microsoft.Extensions.Logging;
 
-namespace Anamnesis.Adapter.Nhs;
+namespace Anamnesis.Adapter.MedicalData.Nhs;
 
 public class NhsConditionReferenceService : IMedicalReferenceService
 {

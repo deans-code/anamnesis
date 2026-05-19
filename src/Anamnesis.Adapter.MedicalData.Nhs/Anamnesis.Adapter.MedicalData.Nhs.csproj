@@ -3,7 +3,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>Anamnesis.Adapter.Nhs</RootNamespace>
+    <RootNamespace>Anamnesis.Adapter.MedicalData.Nhs</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />

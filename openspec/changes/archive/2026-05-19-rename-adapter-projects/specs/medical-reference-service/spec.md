@@ -1,17 +1,4 @@
-### Requirement: Use case retrieves conditions and symptoms via a technology-agnostic port
-The system SHALL define an `IMedicalReferenceService` interface in `Anamnesis.Adapter.MedicalData.Contract`. The interface SHALL expose two methods: `GetConditionsAsync()` and `GetSymptomsAsync()`, each returning `Task<IReadOnlyList<RelatedCondition>>`. The use case layer SHALL NOT reference any NHS-specific type, enum, or string — including `INhsIndexService`, `NhsIndexType`, and any NHS URL.
-
-#### Scenario: Use case project has no NHS-specific type references
-- **WHEN** the `Anamnesis.UseCase.Conversation` project and its contract are compiled
-- **THEN** neither project SHALL contain any identifier that includes the string "Nhs" or "NHS"
-
-#### Scenario: Retrieving conditions returns a list of named entries with URLs
-- **WHEN** `IMedicalReferenceService.GetConditionsAsync()` is called
-- **THEN** the service SHALL return a list of `RelatedCondition` records, each with a non-empty `Name` and an optional `Url`
-
-#### Scenario: Retrieving symptoms returns a list of named entries with URLs
-- **WHEN** `IMedicalReferenceService.GetSymptomsAsync()` is called
-- **THEN** the service SHALL return a list of `RelatedCondition` records, each with a non-empty `Name` and an optional `Url`
+## MODIFIED Requirements
 
 ### Requirement: All NHS-specific data-source concerns are encapsulated in the NHS adapter
 All logic for fetching, parsing, and caching data from the NHS website SHALL reside exclusively in `Anamnesis.Adapter.MedicalData.Nhs`. No NHS URL, NHS HTML-parsing logic, or NHS-specific configuration SHALL exist in the use case or domain layers.

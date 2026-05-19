@@ -1,4 +1,4 @@
-namespace Anamnesis.Adapter.Ollama;
+namespace Anamnesis.Adapter.Llm.Ollama;
 
 internal static class PromptTemplates
 {

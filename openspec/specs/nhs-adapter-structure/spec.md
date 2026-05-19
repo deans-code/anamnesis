@@ -1,5 +1,5 @@
 ### Requirement: NHS adapter follows the three-project adapter pattern
-The solution SHALL contain three projects for the NHS adapter: `Anamnesis.Adapter.MedicalData.Contract` (the technology-agnostic port definition), `Anamnesis.Adapter.Nhs` (the implementation), and `Anamnesis.Adapter.Nhs.Test` (the test project), mirroring the structure of the Ollama adapter.
+The solution SHALL contain three projects for the NHS adapter: `Anamnesis.Adapter.MedicalData.Contract` (the technology-agnostic port definition), `Anamnesis.Adapter.MedicalData.Nhs` (the implementation), and `Anamnesis.Adapter.MedicalData.Nhs.Test` (the test project), mirroring the structure of the Ollama adapter.
 
 #### Scenario: Medical data adapter contract project exists in the solution
 - **WHEN** the solution file is inspected
@@ -7,10 +7,10 @@ The solution SHALL contain three projects for the NHS adapter: `Anamnesis.Adapte
 
 #### Scenario: NHS test project exists in the solution
 - **WHEN** the solution file is inspected
-- **THEN** `Anamnesis.Adapter.Nhs.Test` SHALL be registered as a project
+- **THEN** `Anamnesis.Adapter.MedicalData.Nhs.Test` SHALL be registered as a project
 
 ### Requirement: NhsConditionReferenceService behaviour is covered by unit tests
-`Anamnesis.Adapter.Nhs.Test` SHALL contain tests for `NhsConditionReferenceService` covering successful HTML parsing, in-memory caching, and HTTP failure handling.
+`Anamnesis.Adapter.MedicalData.Nhs.Test` SHALL contain tests for `NhsConditionReferenceService` covering successful HTML parsing, in-memory caching, and HTTP failure handling.
 
 #### Scenario: Valid NHS HTML is parsed into RelatedCondition entries
 - **WHEN** `GetConditionsAsync()` or `GetSymptomsAsync()` is called and the HTTP response contains valid NHS index HTML with matching anchor tags

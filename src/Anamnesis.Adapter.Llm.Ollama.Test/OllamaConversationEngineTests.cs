@@ -1,11 +1,11 @@
 using Anamnesis.Adapter.Llm.Contract;
-using Anamnesis.Adapter.Ollama;
+using Anamnesis.Adapter.Llm.Ollama;
 using Anamnesis.Domain;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Xunit;
 
-namespace Anamnesis.Adapter.Ollama.Test;
+namespace Anamnesis.Adapter.Llm.Ollama.Test;
 
 public class OllamaConversationEngineTests
 {

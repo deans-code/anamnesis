@@ -5,9 +5,9 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anamnesis.Domain", "src\Anamnesis.Domain\Anamnesis.Domain.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF0123456781}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anamnesis.Adapter.Ollama", "src\Anamnesis.Adapter.Ollama\Anamnesis.Adapter.Ollama.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF0123456783}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anamnesis.Adapter.Llm.Ollama", "src\Anamnesis.Adapter.Llm.Ollama\Anamnesis.Adapter.Llm.Ollama.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF0123456783}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anamnesis.Adapter.Ollama.Test", "src\Anamnesis.Adapter.Ollama.Test\Anamnesis.Adapter.Ollama.Test.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF0123456784}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anamnesis.Adapter.Llm.Ollama.Test", "src\Anamnesis.Adapter.Llm.Ollama.Test\Anamnesis.Adapter.Llm.Ollama.Test.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF0123456784}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anamnesis.UseCase.Conversation.Contract", "src\Anamnesis.UseCase.Conversation.Contract\Anamnesis.UseCase.Conversation.Contract.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF0123456785}"
 EndProject
@@ -19,9 +19,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anamnesis.Interface.Website
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anamnesis.Adapter.Nhs", "src\Anamnesis.Adapter.Nhs\Anamnesis.Adapter.Nhs.csproj", "{B8DEA677-84DA-4FDA-8E1D-0556FA8AC9A7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anamnesis.Adapter.MedicalData.Nhs", "src\Anamnesis.Adapter.MedicalData.Nhs\Anamnesis.Adapter.MedicalData.Nhs.csproj", "{B8DEA677-84DA-4FDA-8E1D-0556FA8AC9A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anamnesis.Adapter.Nhs.Test", "src\Anamnesis.Adapter.Nhs.Test\Anamnesis.Adapter.Nhs.Test.csproj", "{22F39BE4-90DC-4785-86F6-0F70ED534E4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anamnesis.Adapter.MedicalData.Nhs.Test", "src\Anamnesis.Adapter.MedicalData.Nhs.Test\Anamnesis.Adapter.MedicalData.Nhs.Test.csproj", "{22F39BE4-90DC-4785-86F6-0F70ED534E4F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anamnesis.Adapter.MedicalData.Contract", "src\Anamnesis.Adapter.MedicalData.Contract\Anamnesis.Adapter.MedicalData.Contract.csproj", "{095164FA-F2C7-439B-9358-8CD847B5C95B}"
 EndProject

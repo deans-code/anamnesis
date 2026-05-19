@@ -10,10 +10,10 @@ The solution SHALL contain a project `Anamnesis.Adapter.MedicalData.Contract` th
 - **THEN** it SHALL reference only `Anamnesis.Domain` and SHALL NOT reference any `UseCase` project
 
 ### Requirement: The NHS adapter implements the medical data adapter contract
-`Anamnesis.Adapter.Nhs` SHALL reference `Anamnesis.Adapter.MedicalData.Contract` and implement `IMedicalReferenceService`. It SHALL NOT reference `Anamnesis.UseCase.Conversation.Contract`.
+`Anamnesis.Adapter.MedicalData.Nhs` SHALL reference `Anamnesis.Adapter.MedicalData.Contract` and implement `IMedicalReferenceService`. It SHALL NOT reference `Anamnesis.UseCase.Conversation.Contract`.
 
 #### Scenario: NHS adapter references adapter contract, not use case contract
-- **WHEN** the project references of `Anamnesis.Adapter.Nhs` are inspected
+- **WHEN** the project references of `Anamnesis.Adapter.MedicalData.Nhs` are inspected
 - **THEN** it SHALL reference `Anamnesis.Adapter.MedicalData.Contract` and SHALL NOT reference `Anamnesis.UseCase.Conversation.Contract`
 
 ### Requirement: The use case implementation references the adapter contract directly

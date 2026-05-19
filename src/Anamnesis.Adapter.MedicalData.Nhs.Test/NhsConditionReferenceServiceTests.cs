@@ -1,10 +1,10 @@
 using System.Net;
 using System.Text;
-using Anamnesis.Adapter.Nhs;
+using Anamnesis.Adapter.MedicalData.Nhs;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
-namespace Anamnesis.Adapter.Nhs.Test;
+namespace Anamnesis.Adapter.MedicalData.Nhs.Test;
 
 public class NhsConditionReferenceServiceTests
 {

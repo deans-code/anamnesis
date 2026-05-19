@@ -1,3 +1,5 @@
+## MODIFIED Requirements
+
 ### Requirement: Use case communicates with LLM via a technology-agnostic port
 The system SHALL define an `IConversationEngine` interface in the use case contract layer (`Anamnesis.UseCase.Conversation.Contract`). The interface SHALL expose four domain-level operations: sending a user message and receiving an assistant reply, checking whether the conversation should continue, requesting a conversation summary, and requesting related conditions and symptoms. The use case layer SHALL NOT reference any type from the LLM adapter contract (`Anamnesis.Adapter.Llm.Contract`) or any LLM-specific concept such as message roles, prompt strings, or raw LLM response formats.
 

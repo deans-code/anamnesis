@@ -3,7 +3,7 @@ using Anamnesis.Adapter.Llm.Contract;
 using Anamnesis.Domain;
 using Microsoft.Extensions.Options;
 
-namespace Anamnesis.Adapter.Ollama;
+namespace Anamnesis.Adapter.Llm.Ollama;
 
 public class OllamaClient : IOllamaClient
 {

@@ -4,21 +4,20 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
-    <RootNamespace>Anamnesis.Adapter.Ollama.Test</RootNamespace>
+    <RootNamespace>Anamnesis.Adapter.MedicalData.Nhs.Test</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="NSubstitute" Version="5.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.8" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Anamnesis.Adapter.Llm.Contract\Anamnesis.Adapter.Llm.Contract.csproj" />
-    <ProjectReference Include="..\Anamnesis.Domain\Anamnesis.Domain.csproj" />
-    <ProjectReference Include="..\Anamnesis.Adapter.Ollama\Anamnesis.Adapter.Ollama.csproj" />
+    <ProjectReference Include="..\Anamnesis.Adapter.MedicalData.Contract\Anamnesis.Adapter.MedicalData.Contract.csproj" />
+    <ProjectReference Include="..\Anamnesis.Adapter.MedicalData.Nhs\Anamnesis.Adapter.MedicalData.Nhs.csproj" />
   </ItemGroup>
 </Project>

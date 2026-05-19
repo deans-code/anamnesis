@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Anamnesis.Adapter.Ollama;
+namespace Anamnesis.Adapter.Llm.Ollama;
 
 internal record OllamaMessageDto(
     [property: JsonPropertyName("role")] string Role,
